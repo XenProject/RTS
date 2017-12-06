@@ -121,15 +121,15 @@ Prefab:
     m_Modifications:
     - target: {fileID: 400100, guid: 838425c754e7b974498de1f85a6b0807, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.4656265
+      value: 188.1
       objectReference: {fileID: 0}
     - target: {fileID: 400100, guid: 838425c754e7b974498de1f85a6b0807, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.82
+      value: 41.8
       objectReference: {fileID: 0}
     - target: {fileID: 400100, guid: 838425c754e7b974498de1f85a6b0807, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.49769962
+      value: 135.8
       objectReference: {fileID: 0}
     - target: {fileID: 400100, guid: 838425c754e7b974498de1f85a6b0807, type: 3}
       propertyPath: m_LocalRotation.x
@@ -526,11 +526,11 @@ Terrain:
   m_TreeDistance: 2000
   m_TreeBillboardDistance: 50
   m_TreeCrossFadeLength: 5
-  m_TreeMaximumFullLODCount: 50
-  m_DetailObjectDistance: 80
+  m_TreeMaximumFullLODCount: 550
+  m_DetailObjectDistance: 250
   m_DetailObjectDensity: 1
-  m_HeightmapPixelError: 5
-  m_SplatMapDistance: 1000
+  m_HeightmapPixelError: 200
+  m_SplatMapDistance: 2000
   m_HeightmapMaximumLOD: 0
   m_CastShadows: 1
   m_DrawHeightmap: 1
