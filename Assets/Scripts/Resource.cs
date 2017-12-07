@@ -1,16 +1,61 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
 
-public class Resource : MonoBehaviour {
+[Serializable]
+public class Resource{
+    [SerializeField]
+    private bool isResearch;
+    [SerializeField]
+    private ResourceType resourceType;
+    [SerializeField]
+    private int maxValue;
+    [SerializeField]
+    private int currentValue;
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    public Resource()
+    {
+        isResearch = true;
+        resourceType = ResourceType.Gold;
+        maxValue = -1;
+        currentValue = 0;
+    }
+
+    public Resource(ResourceType resourceType, int currentValue = 0, int maxValue = -1, bool isResearch = true)
+    {
+        this.isResearch = isResearch;
+        this.resourceType = resourceType;
+        this.currentValue = currentValue;
+        this.maxValue = maxValue;
+    }
+
+    public int CurrentValue
+    {
+        get
+        {
+            return currentValue;
+        }
+
+        set
+        {
+            currentValue = value;
+        }
+    }
+
+    public ResourceType ResourceType
+    {
+        get
+        {
+            return resourceType;
+        }
+
+        set
+        {
+            resourceType = value;
+        }
+    }
+}
+
+public enum ResourceType{
+    Gold,
+    Lumber
 }

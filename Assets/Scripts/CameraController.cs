@@ -49,13 +49,13 @@ public class CameraController : MonoBehaviour {
 
     private void CreateBorder()
     {
-        Ray[] ray = new Ray[2];
-        RaycastHit[] hit = new RaycastHit[2];
-        Vector3[] screenCorners = new Vector3[2];
-        Vector2[] points = new Vector2[2] { new Vector2(0,0),new Vector2(1,1)};
-        Vector3 MiniMapCorner1, MiniMapCorner2;
-        float MiniMapScreenOffsetX1, MiniMapScreenOffsetX2, MiniMapScreenOffsetY1, MiniMapScreenOffsetY2;
-        for (int i = 0; i < 2 ; i++)
+        Ray[] ray = new Ray[3];
+        RaycastHit[] hit = new RaycastHit[3];
+        Vector3[] screenCorners = new Vector3[3];
+        Vector2[] points = new Vector2[3] { new Vector2(0,0),new Vector2(1,1), new Vector2(0,1)};
+        Vector3 MiniMapCorner1, MiniMapCorner2, MiniMapCorner3;
+        float MiniMapScreenOffsetX1, MiniMapScreenOffsetX2, MiniMapScreenOffsetY1, MiniMapScreenOffsetY2, MiniMapScreenOffsetX3, MiniMapScreenOffsetY3;
+        for (int i = 0; i < 3 ; i++)
         {
             ray[i] = Camera.main.ViewportPointToRay(points[i]);
             Physics.Raycast(ray[i], out hit[i], Mathf.Infinity, 1<<0);
@@ -64,6 +64,7 @@ public class CameraController : MonoBehaviour {
         }
         MiniMapCorner1 = MiniMapCamera.WorldToViewportPoint(screenCorners[0]);
         MiniMapCorner2 = MiniMapCamera.WorldToViewportPoint(screenCorners[1]);
+        MiniMapCorner3 = MiniMapCamera.WorldToViewportPoint(screenCorners[2]);
 
         MiniMapScreenOffsetX1 = MiniMapImage.rect.width * MiniMapCorner1.x;
         MiniMapScreenOffsetY1 = MiniMapImage.rect.height * MiniMapCorner1.y;
@@ -71,8 +72,12 @@ public class CameraController : MonoBehaviour {
         MiniMapScreenOffsetX2 = MiniMapImage.rect.width * MiniMapCorner2.x;
         MiniMapScreenOffsetY2 = MiniMapImage.rect.height * MiniMapCorner2.y;
 
-        Rect MiniMapWindow = Rect.MinMaxRect(MiniMapScreenOffsetX1, MiniMapScreenOffsetY1, MiniMapScreenOffsetX2, MiniMapScreenOffsetY2);
-        MapScreen.localPosition = new Vector2(MiniMapScreenOffsetX1, MiniMapScreenOffsetY1);
-        MapScreen.sizeDelta = new Vector2(MiniMapWindow.width, MiniMapWindow.height);
+        MiniMapScreenOffsetX3 = MiniMapImage.rect.width * MiniMapCorner3.x;
+        MiniMapScreenOffsetY3 = MiniMapImage.rect.height * MiniMapCorner3.y;
+
+        //Rect MiniMapWindow = Rect.MinMaxRect(MiniMapScreenOffsetX3, MiniMapScreenOffsetY1, MiniMapScreenOffsetX2, MiniMapScreenOffsetY2);
+        MapScreen.localPosition = new Vector2(MiniMapScreenOffsetX3, MiniMapScreenOffsetY1);
+        MapScreen.sizeDelta = new Vector2(MiniMapScreenOffsetX2- MiniMapScreenOffsetX3, MiniMapScreenOffsetY2- MiniMapScreenOffsetY1);
+        //MapScreen.sizeDelta = new Vector2(MiniMapWindow.width, MiniMapWindow.height);
     }
 }
