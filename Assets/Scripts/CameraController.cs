@@ -10,8 +10,8 @@ public class CameraController : MonoBehaviour {
     public RectTransform MapScreen;
 
     private float borderThickness = 10f;
-    private float minY = 20f;
-    private float maxY = 120f;
+    private float minY = 5f;
+    private float maxY = 40f;
     private float camStop = 15f;
 
     // Update is called once per frame
