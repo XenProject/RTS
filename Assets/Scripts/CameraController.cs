@@ -42,7 +42,7 @@ public class CameraController : MonoBehaviour {
 
         pos.x = Mathf.Clamp(pos.x, -20+camStop, 120-camStop);
         pos.y = Mathf.Clamp(pos.y, minY, maxY);
-        pos.z = Mathf.Clamp(pos.z, -20+camStop, 120-camStop);
+        pos.z = Mathf.Clamp(pos.z, -20, 100-camStop);
         transform.position = pos;
         CreateBorder();
     }

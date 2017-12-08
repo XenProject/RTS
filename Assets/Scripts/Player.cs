@@ -11,8 +11,6 @@ public class Player : MonoBehaviour {
     [SerializeField]
     private List<GameObject> selected;//Выбранные юниты
     [SerializeField]
-    private LayerMask movementMask;
-    [SerializeField]
     private Resource[] resources = new Resource[Enum.GetNames(typeof(ResourceType)).Length];
 
     // Use this for initialization
@@ -32,9 +30,32 @@ public class Player : MonoBehaviour {
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
-            if (Physics.Raycast(ray,out hit))
+            if (selected.Count > 0 && selected[0].GetComponent<IInteractable>().GetOwner() == teamNumber)
             {
-
+                Physics.Raycast(ray, out hit, Mathf.Infinity);
+                switch ( LayerMask.LayerToName(hit.transform.gameObject.layer))
+                {
+                    case "Clickable":
+                        foreach (GameObject unit in selected)
+                        {
+                            if (unit.GetComponent<Unit>() != null)
+                            {
+                                unit.GetComponent<Unit>().SetFocus(hit.transform);
+                            }
+                            else break;
+                        }
+                        break;
+                    default:
+                        foreach (GameObject unit in selected)
+                        {
+                            if (unit.GetComponent<Unit>() != null)
+                            {
+                                unit.GetComponent<Unit>().MoveToPoint(hit.point);
+                            }
+                            else break;
+                        }
+                        break;
+                }
             }
         }
 	}
