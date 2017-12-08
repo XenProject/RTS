@@ -42,7 +42,7 @@ public class CameraController : MonoBehaviour {
 
         pos.x = Mathf.Clamp(pos.x, -20+camStop, 120-camStop);
         pos.y = Mathf.Clamp(pos.y, minY, maxY);
-        pos.z = Mathf.Clamp(pos.z, -20+camStop, 120-camStop);
+        pos.z = Mathf.Clamp(pos.z, -20, 100-camStop);
         transform.position = pos;
         CreateBorder();
     }
@@ -54,7 +54,7 @@ public class CameraController : MonoBehaviour {
         Vector3[] screenCorners = new Vector3[3];
         Vector2[] points = new Vector2[3] { new Vector2(0,0),new Vector2(1,1), new Vector2(0,1)};
         Vector3 MiniMapCorner1, MiniMapCorner2, MiniMapCorner3;
-        float MiniMapScreenOffsetX1, MiniMapScreenOffsetX2, MiniMapScreenOffsetY1, MiniMapScreenOffsetY2, MiniMapScreenOffsetX3, MiniMapScreenOffsetY3;
+        float MiniMapScreenOffsetX2, MiniMapScreenOffsetY1, MiniMapScreenOffsetY2, MiniMapScreenOffsetX3;
         for (int i = 0; i < 3 ; i++)
         {
             ray[i] = Camera.main.ViewportPointToRay(points[i]);
@@ -66,14 +66,14 @@ public class CameraController : MonoBehaviour {
         MiniMapCorner2 = MiniMapCamera.WorldToViewportPoint(screenCorners[1]);
         MiniMapCorner3 = MiniMapCamera.WorldToViewportPoint(screenCorners[2]);
 
-        MiniMapScreenOffsetX1 = MiniMapImage.rect.width * MiniMapCorner1.x;
+        //MiniMapScreenOffsetX1 = MiniMapImage.rect.width * MiniMapCorner1.x;
         MiniMapScreenOffsetY1 = MiniMapImage.rect.height * MiniMapCorner1.y;
 
         MiniMapScreenOffsetX2 = MiniMapImage.rect.width * MiniMapCorner2.x;
         MiniMapScreenOffsetY2 = MiniMapImage.rect.height * MiniMapCorner2.y;
 
         MiniMapScreenOffsetX3 = MiniMapImage.rect.width * MiniMapCorner3.x;
-        MiniMapScreenOffsetY3 = MiniMapImage.rect.height * MiniMapCorner3.y;
+        //MiniMapScreenOffsetY3 = MiniMapImage.rect.height * MiniMapCorner3.y;
 
         //Rect MiniMapWindow = Rect.MinMaxRect(MiniMapScreenOffsetX3, MiniMapScreenOffsetY1, MiniMapScreenOffsetX2, MiniMapScreenOffsetY2);
         MapScreen.localPosition = new Vector2(MiniMapScreenOffsetX3, MiniMapScreenOffsetY1);
