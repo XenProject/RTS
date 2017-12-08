@@ -76,8 +76,8 @@ public class CameraController : MonoBehaviour {
         //MiniMapScreenOffsetY3 = MiniMapImage.rect.height * MiniMapCorner3.y;
 
         //Rect MiniMapWindow = Rect.MinMaxRect(MiniMapScreenOffsetX3, MiniMapScreenOffsetY1, MiniMapScreenOffsetX2, MiniMapScreenOffsetY2);
-        MapScreen.localPosition = new Vector2(MiniMapScreenOffsetX3, MiniMapScreenOffsetY1);
-        MapScreen.sizeDelta = new Vector2(MiniMapScreenOffsetX2- MiniMapScreenOffsetX3, MiniMapScreenOffsetY2- MiniMapScreenOffsetY1);
+        MapScreen.anchoredPosition = new Vector2(MiniMapScreenOffsetX3, MiniMapScreenOffsetY1);
+        MapScreen.sizeDelta = new Vector2(MiniMapScreenOffsetX2 - MiniMapScreenOffsetX3, MiniMapScreenOffsetY2 - MiniMapScreenOffsetY1);
         //MapScreen.sizeDelta = new Vector2(MiniMapWindow.width, MiniMapWindow.height);
     }
 }
