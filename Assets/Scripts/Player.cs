@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 [Serializable]
 public class Player : MonoBehaviour {
@@ -34,7 +35,7 @@ public class Player : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButtonDown(1) && !EventSystem.current.IsPointerOverGameObject() )//Вторая проверка: нажали ли мы на объект интерфейса?
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
@@ -53,7 +54,7 @@ public class Player : MonoBehaviour {
                             else break;
                         }
                         break;
-                    default:
+                    case "Default":
                         foreach (GameObject unit in selected)
                         {
                             if (unit.GetComponent<Unit>() != null)
@@ -62,6 +63,8 @@ public class Player : MonoBehaviour {
                             }
                             else break;
                         }
+                        break;
+                    default:
                         break;
                 }
             }
