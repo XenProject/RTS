@@ -23,13 +23,12 @@ public class Unit : Interactable
 
     public void Start()
     {
-        Player.Instance = Camera.main.GetComponentInParent<Player>();
         agent = GetComponent<NavMeshAgent>();
     }
 
     public override void OnMouseDown()
     {
-        Player.Instance.AddSelectedUnit(gameObject);
+        GameManager.MyPlayer.AddSelectedUnit(this);
     }
 
     void OnDrawGizmosSelected()
@@ -61,6 +60,6 @@ public class Unit : Interactable
     public void RemoveFocus()
     {
         target = null;
-        agent.stoppingDistance = 0;
+        agent.stoppingDistance = 0.5f;
     }
 }

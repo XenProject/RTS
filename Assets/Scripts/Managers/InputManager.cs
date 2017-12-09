@@ -4,67 +4,58 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-[Serializable]
-public class Player : MonoBehaviour {
+public class InputManager : MonoBehaviour {
 
     public RectTransform SelectableZone;
 
-    //Singleton в будущем придется убрать
-    #region Singleton
-    public static Player Instance;
+    public List<Position> pos;
 
-    private void Awake()
-    {
-        Instance = this;
-    }
-    #endregion
-    [SerializeField]
-    private int teamNumber;
-    [SerializeField]
-    private List<GameObject> selected;//Выбранные юниты
-    [SerializeField]
-    private Resource[] resources = new Resource[Enum.GetNames(typeof(ResourceType)).Length];
-
+    //Для SelectableZone
     private Vector3 startPos;
     private Vector3 endPos;
     private Canvas mainCanvas;
     private float scaleFactor;
+    //
+    //Для выделения юнитов в SelectableZone
+    private Vector2 mousePos1;
+    private Vector2 mousePos2;
+    //
 
     // Use this for initialization
     void Start () {
-        //Инициализация всех типов ресурсов
-		for(int i = 0; i< resources.Length; i++)
-        {
-            resources[i] = new Resource((ResourceType)i);
-        }
-        //Инициализация номера команды
-        teamNumber = 0;
         mainCanvas = GameObject.Find("Canvas").GetComponent<Canvas>();
         scaleFactor = mainCanvas.scaleFactor;
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update()
+    {
         //Левая кнопка мыши
         if (Input.GetMouseButtonDown(0))
         {
             RaycastHit hit;
-            if(Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
             {
                 startPos = hit.point;
             }
             SelectableZone.gameObject.SetActive(true);
+            mousePos1 = Camera.main.ScreenToViewportPoint(Input.mousePosition);
         }
         if (Input.GetMouseButtonUp(0))
         {
             SelectableZone.gameObject.SetActive(false);
+            mousePos2 = Camera.main.ScreenToViewportPoint(Input.mousePosition);
+            if(mousePos1 != mousePos2)
+            {
+                SelectObjects();
+            }
         }
         if (Input.GetMouseButton(0))
         {
             endPos = Input.mousePosition;
             Vector3 squareStart = Camera.main.WorldToScreenPoint(startPos);
             squareStart.z = 0f;
-            Vector3 center = (squareStart+endPos)/2f;
+            Vector3 center = (squareStart + endPos) / 2f;
             SelectableZone.position = center;
 
             float sizeX = Mathf.Abs(squareStart.x - endPos.x);
@@ -74,17 +65,17 @@ public class Player : MonoBehaviour {
             SelectableZone.sizeDelta /= scaleFactor;//Отменяем Scale Factor
         }
         //Правая кнопка мыши
-        if (Input.GetMouseButtonDown(1) && !EventSystem.current.IsPointerOverGameObject() )//Вторая проверка: нажали ли мы на объект интерфейса?
+        if (Input.GetMouseButtonDown(1) && !EventSystem.current.IsPointerOverGameObject())//Вторая проверка: нажали ли мы на объект интерфейса?
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
-            if (selected.Count > 0 && selected[0].GetComponent<Interactable>().Owner == teamNumber)
+            if (GameManager.MyPlayer.Selected.Count > 0 && GameManager.MyPlayer.Selected[0].GetComponent<Interactable>().Owner == GameManager.MyPlayer)
             {
                 Physics.Raycast(ray, out hit, Mathf.Infinity);
-                switch ( LayerMask.LayerToName(hit.transform.gameObject.layer))
+                switch (LayerMask.LayerToName(hit.transform.gameObject.layer))
                 {
                     case "Clickable":
-                        foreach (GameObject unit in selected)
+                        foreach (Interactable unit in GameManager.MyPlayer.Selected)
                         {
                             if (unit.GetComponent<Unit>() != null)
                             {
@@ -94,11 +85,14 @@ public class Player : MonoBehaviour {
                         }
                         break;
                     case "Default":
-                        foreach (GameObject unit in selected)
+                        int i = 0;
+                        foreach (Interactable unit in GameManager.MyPlayer.Selected)
                         {
                             if (unit.GetComponent<Unit>() != null)
                             {
-                                unit.GetComponent<Unit>().MoveToPoint(hit.point);
+                                Vector3 targetPos = new Vector3( hit.point.x + pos[i].x, hit.point.y, hit.point.z + pos[i].z);
+                                unit.GetComponent<Unit>().MoveToPoint(targetPos);
+                                i++;
                             }
                             else break;
                         }
@@ -108,11 +102,31 @@ public class Player : MonoBehaviour {
                 }
             }
         }
-	}
-
-    public void AddSelectedUnit(GameObject selectedObj, bool clear = true)
-    {
-        if (clear) selected.Clear();
-        selected.Add(selectedObj);
     }
+
+    void SelectObjects()
+    {
+        Rect selectRect = new Rect(mousePos1.x, mousePos1.y, mousePos2.x - mousePos1.x, mousePos2.y - mousePos1.y);
+        GameManager.MyPlayer.ClearSelectedUnits();
+        foreach (Unit unit in GameManager.MyPlayer.AllUnits)
+        {
+            if(unit != null)
+            {
+                if(selectRect.Contains(Camera.main.WorldToViewportPoint( unit.transform.position), true))
+                {
+                    if(GameManager.MyPlayer.Selected.Count <= 12)
+                    {
+                        GameManager.MyPlayer.AddSelectedUnit(unit, false);
+                    }
+                }
+            }
+        }
+    }
+}
+
+[Serializable]
+public class Position
+{
+    public float x;
+    public float z;
 }
