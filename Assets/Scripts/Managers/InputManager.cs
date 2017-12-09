@@ -107,7 +107,7 @@ public class InputManager : MonoBehaviour {
     void SelectObjects()
     {
         Rect selectRect = new Rect(mousePos1.x, mousePos1.y, mousePos2.x - mousePos1.x, mousePos2.y - mousePos1.y);
-        GameManager.MyPlayer.Selected.Clear();
+        GameManager.MyPlayer.ClearSelectedUnits();
         foreach (Unit unit in GameManager.MyPlayer.AllUnits)
         {
             if(unit != null)

@@ -55,8 +55,9 @@ public class Player{
 
     public void AddSelectedUnit(Interactable selectedObj, bool clear = true)
     {
-        if (clear) Selected.Clear();
+        if (clear) ClearSelectedUnits();
         Selected.Add(selectedObj);
+        selectedObj.GetComponentInChildren<Projector>().enabled = true;
     }
 
     public void AddUnitToAllUnits(Unit newUnit)
@@ -67,5 +68,14 @@ public class Player{
     public Resource[] GetAllResources()
     {
         return resources;
+    }
+
+    public void ClearSelectedUnits()
+    {
+        foreach(Interactable obj in selected)
+        {
+            obj.GetComponentInChildren<Projector>().enabled = false;
+        }
+        selected.Clear();
     }
 }
