@@ -11,11 +11,11 @@ public class Player{
     [SerializeField]
     private int teamNumber;
     [SerializeField]
-    private List<GameObject> selected;//Выбранные юниты
+    private List<Interactable> selected;//Выбранные юниты
     [SerializeField]
     private Resource[] resources = new Resource[Enum.GetNames(typeof(ResourceType)).Length];
     [SerializeField]
-    private List<Unit> allUnits;
+    public List<Unit> AllUnits;
 
     public int TeamNumber
     {
@@ -30,7 +30,7 @@ public class Player{
         }
     }
 
-    public List<GameObject> Selected
+    public List<Interactable> Selected
     {
         get
         {
@@ -49,11 +49,11 @@ public class Player{
         {
             resources[i] = new Resource((ResourceType)i);
         }
-        selected = new List<GameObject>();
-        allUnits = new List<Unit>();
+        selected = new List<Interactable>();
+        AllUnits = new List<Unit>();
     }
 
-    public void AddSelectedUnit(GameObject selectedObj, bool clear = true)
+    public void AddSelectedUnit(Interactable selectedObj, bool clear = true)
     {
         if (clear) Selected.Clear();
         Selected.Add(selectedObj);
@@ -61,7 +61,7 @@ public class Player{
 
     public void AddUnitToAllUnits(Unit newUnit)
     {
-        allUnits.Add(newUnit);
+        AllUnits.Add(newUnit);
     }
 
     public Resource[] GetAllResources()

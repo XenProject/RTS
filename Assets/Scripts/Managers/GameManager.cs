@@ -22,7 +22,15 @@ public class GameManager : MonoBehaviour {
         }
         allPlayers[allPlayers.Length - 1].isBot = true;//Делаем последнего игрока Ботом(пока так***)
         MyPlayer = allPlayers[0];
-        GameObject.Find("Unit1").GetComponent<Unit>().Owner = MyPlayer;
+
+        //Присвоение юнитов с тегом "Player0" нулевому игроку
+        GameObject[] units = GameObject.FindGameObjectsWithTag("Player0");
+        foreach(GameObject unit in units)
+        {
+            unit.GetComponent<Unit>().Owner = MyPlayer;
+            MyPlayer.AddUnitToAllUnits(unit.GetComponent<Unit>());
+        }
+        //
     }
 	
 	// Update is called once per frame

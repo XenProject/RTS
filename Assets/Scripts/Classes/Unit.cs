@@ -28,7 +28,7 @@ public class Unit : Interactable
 
     public override void OnMouseDown()
     {
-        GameManager.MyPlayer.AddSelectedUnit(gameObject);
+        GameManager.MyPlayer.AddSelectedUnit(this);
     }
 
     void OnDrawGizmosSelected()
@@ -60,6 +60,6 @@ public class Unit : Interactable
     public void RemoveFocus()
     {
         target = null;
-        agent.stoppingDistance = 0;
+        agent.stoppingDistance = 0.5f;
     }
 }

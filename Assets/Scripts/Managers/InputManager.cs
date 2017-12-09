@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -7,11 +8,17 @@ public class InputManager : MonoBehaviour {
 
     public RectTransform SelectableZone;
 
+    public List<Position> pos;
+
     //Для SelectableZone
     private Vector3 startPos;
     private Vector3 endPos;
     private Canvas mainCanvas;
     private float scaleFactor;
+    //
+    //Для выделения юнитов в SelectableZone
+    private Vector2 mousePos1;
+    private Vector2 mousePos2;
     //
 
     // Use this for initialization
@@ -32,10 +39,16 @@ public class InputManager : MonoBehaviour {
                 startPos = hit.point;
             }
             SelectableZone.gameObject.SetActive(true);
+            mousePos1 = Camera.main.ScreenToViewportPoint(Input.mousePosition);
         }
         if (Input.GetMouseButtonUp(0))
         {
             SelectableZone.gameObject.SetActive(false);
+            mousePos2 = Camera.main.ScreenToViewportPoint(Input.mousePosition);
+            if(mousePos1 != mousePos2)
+            {
+                SelectObjects();
+            }
         }
         if (Input.GetMouseButton(0))
         {
@@ -62,7 +75,7 @@ public class InputManager : MonoBehaviour {
                 switch (LayerMask.LayerToName(hit.transform.gameObject.layer))
                 {
                     case "Clickable":
-                        foreach (GameObject unit in GameManager.MyPlayer.Selected)
+                        foreach (Interactable unit in GameManager.MyPlayer.Selected)
                         {
                             if (unit.GetComponent<Unit>() != null)
                             {
@@ -72,11 +85,14 @@ public class InputManager : MonoBehaviour {
                         }
                         break;
                     case "Default":
-                        foreach (GameObject unit in GameManager.MyPlayer.Selected)
+                        int i = 0;
+                        foreach (Interactable unit in GameManager.MyPlayer.Selected)
                         {
                             if (unit.GetComponent<Unit>() != null)
                             {
-                                unit.GetComponent<Unit>().MoveToPoint(hit.point);
+                                Vector3 targetPos = new Vector3( hit.point.x + pos[i].x, hit.point.y, hit.point.z + pos[i].z);
+                                unit.GetComponent<Unit>().MoveToPoint(targetPos);
+                                i++;
                             }
                             else break;
                         }
@@ -87,4 +103,30 @@ public class InputManager : MonoBehaviour {
             }
         }
     }
+
+    void SelectObjects()
+    {
+        Rect selectRect = new Rect(mousePos1.x, mousePos1.y, mousePos2.x - mousePos1.x, mousePos2.y - mousePos1.y);
+        GameManager.MyPlayer.Selected.Clear();
+        foreach (Unit unit in GameManager.MyPlayer.AllUnits)
+        {
+            if(unit != null)
+            {
+                if(selectRect.Contains(Camera.main.WorldToViewportPoint( unit.transform.position), true))
+                {
+                    if(GameManager.MyPlayer.Selected.Count <= 12)
+                    {
+                        GameManager.MyPlayer.AddSelectedUnit(unit, false);
+                    }
+                }
+            }
+        }
+    }
+}
+
+[Serializable]
+public class Position
+{
+    public float x;
+    public float z;
 }
