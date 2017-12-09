@@ -2,12 +2,8 @@
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
-public class Unit : MonoBehaviour, IInteractable
+public class Unit : Interactable
 {
-    public float Radius = 3.0f;
-    public int owner;
-
-    private Player player;
     private NavMeshAgent agent;
     [SerializeField]
     private Transform target;
@@ -25,25 +21,15 @@ public class Unit : MonoBehaviour, IInteractable
         }
     }
 
-    public float GetRadius()
-    {
-        return Radius;
-    }
-
-    public int GetOwner()
-    {
-        return owner;
-    }
-
     public void Start()
     {
-        player = Camera.main.GetComponentInParent<Player>();
+        Player.Instance = Camera.main.GetComponentInParent<Player>();
         agent = GetComponent<NavMeshAgent>();
     }
 
-    public void OnMouseDown()
+    public override void OnMouseDown()
     {
-        player.AddSelectedUnit(gameObject);
+        Player.Instance.AddSelectedUnit(gameObject);
     }
 
     void OnDrawGizmosSelected()
@@ -68,7 +54,7 @@ public class Unit : MonoBehaviour, IInteractable
 
     public void SetFocus(Transform target)
     {
-        agent.stoppingDistance = target.GetComponent<IInteractable>().GetRadius() * 0.8f;
+        agent.stoppingDistance = target.GetComponent<Interactable>().Radius * 0.8f;
         this.target = target;
     }
 

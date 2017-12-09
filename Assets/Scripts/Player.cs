@@ -6,6 +6,14 @@ using UnityEngine;
 [Serializable]
 public class Player : MonoBehaviour {
 
+    #region Singleton
+    public static Player Instance;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+    #endregion
     [SerializeField]
     private int teamNumber;
     [SerializeField]
@@ -30,7 +38,7 @@ public class Player : MonoBehaviour {
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
-            if (selected.Count > 0 && selected[0].GetComponent<IInteractable>().GetOwner() == teamNumber)
+            if (selected.Count > 0 && selected[0].GetComponent<Interactable>().Owner == teamNumber)
             {
                 Physics.Raycast(ray, out hit, Mathf.Infinity);
                 switch ( LayerMask.LayerToName(hit.transform.gameObject.layer))
