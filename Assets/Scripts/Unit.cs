@@ -23,13 +23,12 @@ public class Unit : Interactable
 
     public void Start()
     {
-        Player.Instance = Camera.main.GetComponentInParent<Player>();
         agent = GetComponent<NavMeshAgent>();
     }
 
     public override void OnMouseDown()
     {
-        Player.Instance.AddSelectedUnit(gameObject);
+        GameManager.MyPlayer.AddSelectedUnit(gameObject);
     }
 
     void OnDrawGizmosSelected()

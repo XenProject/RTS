@@ -9,7 +9,7 @@
 public abstract class Interactable : MonoBehaviour
 {
     public float Radius;
-    public int Owner;
+    public Player Owner;
 
     public abstract void OnMouseDown();
 }
