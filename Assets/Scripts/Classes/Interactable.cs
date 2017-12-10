@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 /*public interface IInteractable{
     float GetRadius();
@@ -8,6 +9,8 @@
 
 public abstract class Interactable : MonoBehaviour
 {
+    public Sprite Icon;
+    public GameObject SelectedIcon;
     public float Radius;
     public Player Owner;
 

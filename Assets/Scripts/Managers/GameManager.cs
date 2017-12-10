@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour {
+
+    public Image Portrait;
+    public GameObject SelectedPanel;
 
     public Player[] allPlayers = new Player[2];//Таблица всех игроков
     public static Player MyPlayer;//Это мы

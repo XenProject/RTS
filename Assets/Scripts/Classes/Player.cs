@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 [Serializable]
 public class Player{
@@ -57,6 +56,9 @@ public class Player{
     {
         if (clear) ClearSelectedUnits();
         Selected.Add(selectedObj);
+        GameManager.Instance.Portrait.sprite = selected[0].Icon;
+        selectedObj.SelectedIcon = GameObject.Instantiate( Resources.Load<GameObject>("UI/SelectedIcon"), GameManager.Instance.SelectedPanel.transform );
+        selectedObj.SelectedIcon.GetComponent<Image>().sprite = selectedObj.Icon;
         selectedObj.GetComponentInChildren<Projector>().enabled = true;
     }
 
@@ -75,7 +77,10 @@ public class Player{
         foreach(Interactable obj in selected)
         {
             obj.GetComponentInChildren<Projector>().enabled = false;
+            GameObject.DestroyImmediate(obj.SelectedIcon);
+            obj.SelectedIcon = null;
         }
         selected.Clear();
+        GameManager.Instance.Portrait.sprite = null;
     }
 }

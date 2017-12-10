@@ -1466,6 +1466,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d500962034c67174a99e1c0fffb77507, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Icon: {fileID: 21300000, guid: d3cf0f088f52f1d47bb2b3c6ef2889c3, type: 3}
+  SelectedIcon: {fileID: 0}
   Radius: 2
   Owner:
     isBot: 0
