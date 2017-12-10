@@ -115,6 +115,11 @@ public class InputManager : MonoBehaviour {
                 MenuButton();
             }
         }
+        //Tab
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            GameManager.MyPlayer.ChangeNowSelected();
+        }
     }
 
     void SelectObjects()

@@ -8,6 +8,10 @@ public class Unit : Interactable
     private NavMeshAgent agent;
     [SerializeField]
     private Transform target;
+    [SerializeField]
+    private bool isBuilder;
+
+    private int priority;
 
     public NavMeshAgent Agent
     {
@@ -22,11 +26,40 @@ public class Unit : Interactable
         }
     }
 
+    public bool IsBuilder
+    {
+        get
+        {
+            return isBuilder;
+        }
+
+        set
+        {
+            isBuilder = value;
+        }
+    }
+
+    public int Priority
+    {
+        get
+        {
+            return priority;
+        }
+
+        set
+        {
+            priority = value;
+        }
+    }
+
     public void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         maxHealth = 100;
         curHealth = maxHealth;
+        IsBuilder = false;
+        Name = "TestUnit";
+        Priority = 0;
     }
 
     public override void OnMouseDown()
@@ -69,4 +102,23 @@ public class Unit : Interactable
         target = null;
         agent.stoppingDistance = 0.5f;
     }
+
+    public bool CompareWith(Unit unit)
+    {
+        if( this.Name == unit.Name && ( this.isBuilder == unit.isBuilder ))
+        {
+            return true;
+        }
+        return false;
+    }
+    /*
+    public static bool operator <(Unit left, Unit right)
+    {
+        return left.priority < right.priority;
+    }
+
+    public static bool operator >(Unit left, Unit right)
+    {
+        return left.priority > right.priority;
+    }*/
 }
