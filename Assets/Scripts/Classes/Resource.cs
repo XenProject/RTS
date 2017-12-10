@@ -41,6 +41,11 @@ public class Resource{
         }
     }
 
+    public string GetResourceName()
+    {
+        return resourceType.ToString();
+    }
+
     public ResourceType ResourceType
     {
         get
@@ -57,5 +62,6 @@ public class Resource{
 
 public enum ResourceType{
     Gold,
-    Lumber
+    Wood,
+    Iron
 }

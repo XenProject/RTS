@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class Unit : Interactable
@@ -24,6 +25,8 @@ public class Unit : Interactable
     public void Start()
     {
         agent = GetComponent<NavMeshAgent>();
+        maxHealth = 100;
+        curHealth = maxHealth;
     }
 
     public override void OnMouseDown()
@@ -42,6 +45,10 @@ public class Unit : Interactable
         if (target != null)
         {
             agent.SetDestination(target.position);
+        }
+        if (SelectedIcon != null)
+        {
+            SelectedIcon.transform.GetChild(0).GetComponent<Image>().fillAmount = GetHealthPercentage();
         }
     }
 

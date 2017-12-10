@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -7,6 +6,7 @@ using UnityEngine.EventSystems;
 public class InputManager : MonoBehaviour {
 
     public RectTransform SelectableZone;
+    public GameObject PausePanel;
 
     public List<Position> pos;
 
@@ -20,6 +20,7 @@ public class InputManager : MonoBehaviour {
     private Vector2 mousePos1;
     private Vector2 mousePos2;
     //
+    private bool isPaused = false;
 
     // Use this for initialization
     void Start () {
@@ -69,7 +70,7 @@ public class InputManager : MonoBehaviour {
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
-            if (GameManager.MyPlayer.Selected.Count > 0 && GameManager.MyPlayer.Selected[0].GetComponent<Interactable>().Owner == GameManager.MyPlayer)
+            if (GameManager.MyPlayer.Selected.Count > 0 && GameManager.MyPlayer.Selected[0].Owner == GameManager.MyPlayer)
             {
                 Physics.Raycast(ray, out hit, Mathf.Infinity);
                 switch (LayerMask.LayerToName(hit.transform.gameObject.layer))
@@ -102,18 +103,35 @@ public class InputManager : MonoBehaviour {
                 }
             }
         }
+        //Esc
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if(GameManager.MyPlayer.Selected.Count > 0)
+            {
+                GameManager.MyPlayer.ClearSelectedUnits();
+            }
+            else
+            {
+                MenuButton();
+            }
+        }
     }
 
     void SelectObjects()
     {
+        bool hasOne = false;
         Rect selectRect = new Rect(mousePos1.x, mousePos1.y, mousePos2.x - mousePos1.x, mousePos2.y - mousePos1.y);
-        GameManager.MyPlayer.ClearSelectedUnits();
         foreach (Unit unit in GameManager.MyPlayer.AllUnits)
         {
             if(unit != null)
             {
                 if(selectRect.Contains(Camera.main.WorldToViewportPoint( unit.transform.position), true))
                 {
+                    if (!hasOne)
+                    {
+                        GameManager.MyPlayer.ClearSelectedUnits();
+                        hasOne = true;
+                    }
                     if(GameManager.MyPlayer.Selected.Count <= 12)
                     {
                         GameManager.MyPlayer.AddSelectedUnit(unit, false);
@@ -121,6 +139,21 @@ public class InputManager : MonoBehaviour {
                 }
             }
         }
+    }
+
+    public void MenuButton()
+    {
+        if (!isPaused)
+        {
+            Time.timeScale = 0.0f;
+            isPaused = true;
+        }
+        else
+        {
+            Time.timeScale = 1.0f;
+            isPaused = false;
+        }
+        PausePanel.SetActive(isPaused);
     }
 }
 

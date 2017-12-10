@@ -3,6 +3,7 @@ using UnityEngine.UI;
 
 public class CameraController : MonoBehaviour {
 
+    public bool isLocked = true;
     public float camSpeed = 20f;
     public float scrollSpeed = 20f;
     public Camera MiniMapCamera;
@@ -19,19 +20,19 @@ public class CameraController : MonoBehaviour {
     void Update () {
         Vector3 pos = transform.position;
 
-        if (Input.GetKey(KeyCode.W) || Input.mousePosition.y >= Screen.height - borderThickness)
+        if (Input.GetKey(KeyCode.W) || (!isLocked && Input.mousePosition.y >= Screen.height - borderThickness) )
         {
             pos.z += camSpeed * Time.deltaTime;
         }
-        if (Input.GetKey(KeyCode.S) || Input.mousePosition.y <= borderThickness)
+        if (Input.GetKey(KeyCode.S) || (!isLocked && Input.mousePosition.y <= borderThickness) )
         {
             pos.z -= camSpeed * Time.deltaTime;
         }
-        if (Input.GetKey(KeyCode.A) || Input.mousePosition.x <= borderThickness)
+        if (Input.GetKey(KeyCode.A) || (!isLocked && Input.mousePosition.x <= borderThickness) )
         {
             pos.x -= camSpeed * Time.deltaTime;
         }
-        if (Input.GetKey(KeyCode.D) || Input.mousePosition.x >= Screen.width - borderThickness)
+        if (Input.GetKey(KeyCode.D) || (!isLocked && Input.mousePosition.x >= Screen.width - borderThickness) )
         {
             pos.x += camSpeed * Time.deltaTime;
         }

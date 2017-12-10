@@ -54,12 +54,25 @@ public class Player{
 
     public void AddSelectedUnit(Interactable selectedObj, bool clear = true)
     {
-        if (clear) ClearSelectedUnits();
-        Selected.Add(selectedObj);
-        GameManager.Instance.Portrait.sprite = selected[0].Icon;
-        selectedObj.SelectedIcon = GameObject.Instantiate( Resources.Load<GameObject>("UI/SelectedIcon"), GameManager.Instance.SelectedPanel.transform );
+        if (clear) ClearSelectedUnits();//Очищаем список выделенных юнитов
+        Selected.Add(selectedObj);//Добаляем нового юнита в этот список
+
+        GameManager.Instance.Portrait.sprite = selected[0].Icon;//Изменяем портрет на первого в списке
+        GameManager.Instance.Portrait.gameObject.SetActive(true);//Включаем портрет
+        //Создаем иконку на панели выделенных юнитов
+        selectedObj.SelectedIcon = GameObject.Instantiate( Resources.Load<GameObject>("Prefabs/UI/SelectedIcon"), GameManager.Instance.SelectedPanel.transform );
         selectedObj.SelectedIcon.GetComponent<Image>().sprite = selectedObj.Icon;
-        selectedObj.GetComponentInChildren<Projector>().enabled = true;
+        //
+        Projector proj = selectedObj.GetComponentInChildren<Projector>();//Рисуем круг под выделенным юнитом в зависимости от команды
+        if (GameManager.MyPlayer == selectedObj.Owner)
+        {
+            proj.material.SetTexture("_ShadowTex", GameManager.Instance.CircleFriendly);
+        }
+        else
+        {
+            proj.material.SetTexture("_ShadowTex", GameManager.Instance.CircleEnemy);
+        }
+        proj.enabled = true;//Включаем отображение круга
     }
 
     public void AddUnitToAllUnits(Unit newUnit)
@@ -72,6 +85,16 @@ public class Player{
         return resources;
     }
 
+    public Resource GetResourceByName(string name)
+    {
+        foreach(Resource res in resources)
+        {
+            if (name == res.GetResourceName())
+                return res;
+        }
+        return null;
+    }
+
     public void ClearSelectedUnits()
     {
         foreach(Interactable obj in selected)
@@ -82,5 +105,6 @@ public class Player{
         }
         selected.Clear();
         GameManager.Instance.Portrait.sprite = null;
+        GameManager.Instance.Portrait.gameObject.SetActive(false);
     }
 }
