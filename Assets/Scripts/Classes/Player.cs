@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 [Serializable]
 public class Player{
@@ -11,6 +12,8 @@ public class Player{
     private int teamNumber;
     [SerializeField]
     private List<Interactable> selected;//Выбранные юниты
+    [SerializeField]
+    private Unit nowSelectedType;
     [SerializeField]
     private Resource[] resources = new Resource[Enum.GetNames(typeof(ResourceType)).Length];
     [SerializeField]
@@ -63,16 +66,19 @@ public class Player{
         selectedObj.SelectedIcon = GameObject.Instantiate( Resources.Load<GameObject>("Prefabs/UI/SelectedIcon"), GameManager.Instance.SelectedPanel.transform );
         selectedObj.SelectedIcon.GetComponent<Image>().sprite = selectedObj.Icon;
         //
-        Projector proj = selectedObj.GetComponentInChildren<Projector>();//Рисуем круг под выделенным юнитом в зависимости от команды
+        //Рисуем круг под выделенным юнитом в зависимости от команды
+        Projector proj = selectedObj.GetComponentInChildren<Projector>();
         if (GameManager.MyPlayer == selectedObj.Owner)
         {
-            proj.material.SetTexture("_ShadowTex", GameManager.Instance.CircleFriendly);
+            proj.material.SetTexture("_ShadowTex", GameManager.Instance.CircleFriendly);//_ShadowTex из названия шейдера Projector/Multiply
         }
         else
         {
             proj.material.SetTexture("_ShadowTex", GameManager.Instance.CircleEnemy);
         }
         proj.enabled = true;//Включаем отображение круга
+        //Сортировка****Надо будет оптимизировать, чтобы не вызывалась при добавлении каждого юнита
+        SortSelectedList();
     }
 
     public void AddUnitToAllUnits(Unit newUnit)
@@ -106,5 +112,76 @@ public class Player{
         selected.Clear();
         GameManager.Instance.Portrait.sprite = null;
         GameManager.Instance.Portrait.gameObject.SetActive(false);
+    }
+
+    public void SortSelectedList()
+    {
+        if (selected.Count > 1)
+        {
+            selected = (selected.OrderByDescending(u => (u as Unit).Priority)).ToList<Interactable>();
+            for (int i = 0; i < selected.Count; i++)
+            {
+                (selected[i] as Unit).SelectedIcon.transform.SetSiblingIndex(i);
+            }
+        }
+        SetupNowSelected(0);//Первый
+    }
+
+    private void ActivateOneTypeUnits()
+    {
+        if (selected.Count == 1)
+        {
+            nowSelectedType.SelectedIcon.transform.GetChild(1).GetComponent<Image>().enabled = true;
+        }
+        else
+        {
+            foreach (Unit unit in selected)
+            {
+                if (unit.CompareWith(nowSelectedType)) unit.SelectedIcon.transform.GetChild(1).GetComponent<Image>().enabled = true;
+                else unit.SelectedIcon.transform.GetChild(1).GetComponent<Image>().enabled = false;
+            }
+        }
+    }
+
+    private void SetupNowSelected(int index)
+    {
+        nowSelectedType = selected[index] as Unit;
+        if (nowSelectedType.IsBuilder)
+        {
+            GameManager.Instance.BuildingButton.SetActive(true);
+        }
+        else
+        {
+            GameManager.Instance.BuildingButton.SetActive(false);
+        }
+        ActivateOneTypeUnits();
+    }
+
+    public void ChangeNowSelected()
+    {
+        if (selected.Count <= 1) return;
+        if ((selected[0] as Unit).CompareWith((selected[selected.Count - 1] as Unit))) return;//Если все юниты одного типа
+        
+        if( !FindNextSelected(selected.IndexOf(nowSelectedType)))//Если не найдем, идем сначала массива
+            FindNextSelected(0);
+    }
+
+    private bool FindNextSelected(int beginIndex)
+    {
+        for (int i = beginIndex; i < selected.Count - 1; i++)
+        {
+            if ((selected[i] as Unit).CompareWith(selected[i + 1] as Unit)) continue;
+            else
+            {
+                SetupNowSelected(i + 1);
+                return true;
+            }
+        }
+        if (!(selected[selected.Count-1] as Unit).CompareWith(selected[0] as Unit))
+        {
+            SetupNowSelected(0);
+            return true;
+        }
+        return false;
     }
 }

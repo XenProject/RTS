@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour {
     public Image Portrait;
     public GameObject SelectedPanel;
     public GameObject ResourcePanel;
+    public GameObject BuildingButton;
     public Text GameTime;
 
     public Texture CircleEnemy;
@@ -17,7 +18,7 @@ public class GameManager : MonoBehaviour {
     public Player[] allPlayers = new Player[2];//Таблица всех игроков
     public static Player MyPlayer;//Это мы
 
-    private CursorMode cursorMode = CursorMode.ForceSoftware;
+    private CursorMode cursorMode = CursorMode.Auto;
 
     #region Singleton
     public static GameManager Instance;
@@ -54,10 +55,16 @@ public class GameManager : MonoBehaviour {
             unit.GetComponent<Unit>().Owner = MyPlayer;
             MyPlayer.AddUnitToAllUnits(unit.GetComponent<Unit>());
         }
+        //*****************Debugging******************
+        units[units.Length - 1].GetComponent<Unit>().Name = "Other";
+        units[units.Length - 1].GetComponent<Unit>().Priority = 1;
+        units[units.Length - 1].GetComponent<Unit>().IsBuilder = true;
+        //Debug.Log( units[0].GetComponent<Unit>().Equals(units[1].GetComponent<Unit>() ) );
         //
     }
 	
 	// Update is called once per frame
-	void Update () { 
+	void Update () {
+        
     }
 }
