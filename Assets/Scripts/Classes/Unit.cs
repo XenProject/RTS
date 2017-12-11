@@ -64,7 +64,7 @@ public class Unit : Interactable
 
     public override void OnMouseDown()
     {
-        GameManager.MyPlayer.AddSelectedUnit(this);
+        GameManager.MyPlayer.AddSelectedObject(this);
     }
 
     void OnDrawGizmosSelected()

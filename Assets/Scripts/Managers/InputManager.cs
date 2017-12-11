@@ -139,7 +139,7 @@ public class InputManager : MonoBehaviour {
                     }
                     if(GameManager.MyPlayer.Selected.Count <= 12)
                     {
-                        GameManager.MyPlayer.AddSelectedUnit(unit, false);
+                        GameManager.MyPlayer.AddSelectedObject(unit, false);
                     }
                 }
             }
@@ -159,6 +159,11 @@ public class InputManager : MonoBehaviour {
             isPaused = false;
         }
         PausePanel.SetActive(isPaused);
+    }
+
+    public void BuildButton()
+    {
+        Building.BuildByName("Farm");
     }
 }
 

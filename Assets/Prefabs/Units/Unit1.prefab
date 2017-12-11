@@ -1473,6 +1473,7 @@ MonoBehaviour:
     isBot: 0
     teamNumber: 0
     selected: []
+    nowSelectedType: {fileID: 0}
     resources:
     - isResearch: 1
       resourceType: 0
@@ -1483,7 +1484,11 @@ MonoBehaviour:
       maxValue: -1
       currentValue: 0
     AllUnits: []
+  Name: 
+  curHealth: 0
+  maxHealth: 0
   target: {fileID: 0}
+  isBuilder: 0
 --- !u!119 &119331897589057622
 Projector:
   m_ObjectHideFlags: 1

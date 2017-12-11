@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: c26bb72c59d08984e94afab883ddb03e
-timeCreated: 1512771570
+guid: 0d32f264b4f26b840bac07e15a17e49b
+timeCreated: 1513013683
 licenseType: Free
 ModelImporter:
   serializedVersion: 22
@@ -10,18 +10,19 @@ ModelImporter:
     2300000: //RootNode
     3300000: //RootNode
     4300000: Box001
+    7400000: Take 001
     9500000: //RootNode
   externalObjects:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: No Name
-    second: {fileID: 2100000, guid: ee3c32ac4d5341e45ab4a9e86fab3714, type: 2}
+    second: {fileID: 2100000, guid: bfbd541fdc80ea8499aa3faa255a4769, type: 2}
   materials:
     importMaterials: 1
     materialName: 0
     materialSearch: 1
-    materialLocation: 0
+    materialLocation: 1
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0

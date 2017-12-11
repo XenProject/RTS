@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour {
     public Texture2D CustomCursor;
 
     public Image Portrait;
+    public Text UnitName;
     public GameObject SelectedPanel;
     public GameObject ResourcePanel;
     public GameObject BuildingButton;
@@ -17,6 +18,8 @@ public class GameManager : MonoBehaviour {
 
     public Player[] allPlayers = new Player[2];//Таблица всех игроков
     public static Player MyPlayer;//Это мы
+
+    public int NumIntersection = 0;
 
     private CursorMode cursorMode = CursorMode.Auto;
 

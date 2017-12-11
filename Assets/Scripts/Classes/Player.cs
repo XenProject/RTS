@@ -55,13 +55,11 @@ public class Player{
         AllUnits = new List<Unit>();
     }
 
-    public void AddSelectedUnit(Interactable selectedObj, bool clear = true)
+    public void AddSelectedObject(Interactable selectedObj, bool clear = true)
     {
         if (clear) ClearSelectedUnits();//Очищаем список выделенных юнитов
         Selected.Add(selectedObj);//Добаляем нового юнита в этот список
 
-        GameManager.Instance.Portrait.sprite = selected[0].Icon;//Изменяем портрет на первого в списке
-        GameManager.Instance.Portrait.gameObject.SetActive(true);//Включаем портрет
         //Создаем иконку на панели выделенных юнитов
         selectedObj.SelectedIcon = GameObject.Instantiate( Resources.Load<GameObject>("Prefabs/UI/SelectedIcon"), GameManager.Instance.SelectedPanel.transform );
         selectedObj.SelectedIcon.GetComponent<Image>().sprite = selectedObj.Icon;
@@ -110,8 +108,7 @@ public class Player{
             obj.SelectedIcon = null;
         }
         selected.Clear();
-        GameManager.Instance.Portrait.sprite = null;
-        GameManager.Instance.Portrait.gameObject.SetActive(false);
+        SetupNowSelected(-1);
     }
 
     public void SortSelectedList()
@@ -127,11 +124,11 @@ public class Player{
         SetupNowSelected(0);//Первый
     }
 
-    private void ActivateOneTypeUnits()
+    private void ActivateOneTypeUnits()//Зеленая рамка на юнитов одного типа
     {
         if (selected.Count == 1)
         {
-            nowSelectedType.SelectedIcon.transform.GetChild(1).GetComponent<Image>().enabled = true;
+            nowSelectedType.SelectedIcon.transform.GetChild(1).GetComponent<Image>().enabled = true;//Зеленая рамка
         }
         else
         {
@@ -145,15 +142,27 @@ public class Player{
 
     private void SetupNowSelected(int index)
     {
+        if (index == -1)//Если юнитов нет
+        {
+            nowSelectedType = null;
+            GameManager.Instance.BuildingButton.SetActive(false);            
+            GameManager.Instance.Portrait.gameObject.SetActive(false);
+            GameManager.Instance.UnitName.gameObject.SetActive(false);
+            return;
+        }
+
         nowSelectedType = selected[index] as Unit;
-        if (nowSelectedType.IsBuilder)
-        {
+
+        if (nowSelectedType.IsBuilder)//Если юнит строитель
             GameManager.Instance.BuildingButton.SetActive(true);
-        }
         else
-        {
             GameManager.Instance.BuildingButton.SetActive(false);
-        }
+
+        GameManager.Instance.Portrait.sprite = nowSelectedType.Icon;//Изменяем портрет на выбранный тип
+        GameManager.Instance.Portrait.gameObject.SetActive(true);//Включаем портрет
+        GameManager.Instance.UnitName.text = nowSelectedType.Name;//Пишем имя
+        GameManager.Instance.UnitName.gameObject.SetActive(true);
+
         ActivateOneTypeUnits();
     }
 
