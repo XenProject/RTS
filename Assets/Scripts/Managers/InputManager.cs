@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.EventSystems;
 
 public class InputManager : MonoBehaviour {
+
+    public LayerMask MaskForBuilding;
 
     public RectTransform SelectableZone;
     public GameObject PausePanel;
@@ -21,6 +24,9 @@ public class InputManager : MonoBehaviour {
     private Vector2 mousePos2;
     //
     private bool isPaused = false;
+    //Текущее здание
+    public GameObject CurrentBuilding = null;
+    private float buildingDelay = 0.0f;
 
     // Use this for initialization
     void Start () {
@@ -31,39 +37,42 @@ public class InputManager : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        //Левая кнопка мыши
-        if (Input.GetMouseButtonDown(0))
+        if (CurrentBuilding==null && buildingDelay <= 0)//Проверям строим ли мы сейчас или последнии 0,5сек
         {
-            RaycastHit hit;
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
+            //Левая кнопка мыши
+            if (Input.GetMouseButtonDown(0))
             {
-                startPos = hit.point;
+                RaycastHit hit;
+                if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
+                {
+                    startPos = hit.point;
+                }
+                SelectableZone.gameObject.SetActive(true);
+                mousePos1 = Camera.main.ScreenToViewportPoint(Input.mousePosition);
             }
-            SelectableZone.gameObject.SetActive(true);
-            mousePos1 = Camera.main.ScreenToViewportPoint(Input.mousePosition);
-        }
-        if (Input.GetMouseButtonUp(0))
-        {
-            SelectableZone.gameObject.SetActive(false);
-            mousePos2 = Camera.main.ScreenToViewportPoint(Input.mousePosition);
-            if(mousePos1 != mousePos2)
+            if (Input.GetMouseButtonUp(0))
             {
-                SelectObjects();
+                SelectableZone.gameObject.SetActive(false);
+                mousePos2 = Camera.main.ScreenToViewportPoint(Input.mousePosition);
+                if (mousePos1 != mousePos2)
+                {
+                    SelectObjects();
+                }
             }
-        }
-        if (Input.GetMouseButton(0))
-        {
-            endPos = Input.mousePosition;
-            Vector3 squareStart = Camera.main.WorldToScreenPoint(startPos);
-            squareStart.z = 0f;
-            Vector3 center = (squareStart + endPos) / 2f;
-            SelectableZone.position = center;
+            if (Input.GetMouseButton(0))
+            {
+                endPos = Input.mousePosition;
+                Vector3 squareStart = Camera.main.WorldToScreenPoint(startPos);
+                squareStart.z = 0f;
+                Vector3 center = (squareStart + endPos) / 2f;
+                SelectableZone.position = center;
 
-            float sizeX = Mathf.Abs(squareStart.x - endPos.x);
-            float sizeY = Mathf.Abs(squareStart.y - endPos.y);
+                float sizeX = Mathf.Abs(squareStart.x - endPos.x);
+                float sizeY = Mathf.Abs(squareStart.y - endPos.y);
 
-            SelectableZone.sizeDelta = new Vector2(sizeX, sizeY);
-            SelectableZone.sizeDelta /= scaleFactor;//Отменяем Scale Factor
+                SelectableZone.sizeDelta = new Vector2(sizeX, sizeY);
+                SelectableZone.sizeDelta /= scaleFactor;//Отменяем Scale Factor
+            }
         }
         //Правая кнопка мыши
         if (Input.GetMouseButtonDown(1) && !EventSystem.current.IsPointerOverGameObject())//Вторая проверка: нажали ли мы на объект интерфейса?
@@ -91,7 +100,7 @@ public class InputManager : MonoBehaviour {
                         {
                             if (unit.GetComponent<Unit>() != null)
                             {
-                                Vector3 targetPos = new Vector3( hit.point.x + pos[i].x, hit.point.y, hit.point.z + pos[i].z);
+                                Vector3 targetPos = new Vector3(hit.point.x + pos[i].x, hit.point.y, hit.point.z + pos[i].z);
                                 unit.GetComponent<Unit>().MoveToPoint(targetPos);
                                 i++;
                             }
@@ -106,20 +115,50 @@ public class InputManager : MonoBehaviour {
         //Esc
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if(GameManager.MyPlayer.Selected.Count > 0)
+            if (CurrentBuilding != null)
             {
-                GameManager.MyPlayer.ClearSelectedUnits();
+                GameObject.DestroyImmediate(CurrentBuilding);
+                CurrentBuilding = null;
             }
             else
             {
-                MenuButton();
-            }
+                if (GameManager.MyPlayer.Selected.Count > 0)
+                {
+                    GameManager.MyPlayer.ClearSelectedUnits();
+                }
+                else
+                {
+                    MenuButton();
+                }
+            } 
         }
         //Tab
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             GameManager.MyPlayer.ChangeNowSelected();
         }
+
+        if (CurrentBuilding != null)
+        {
+            Ray ray;
+            RaycastHit hit;
+            ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, MaskForBuilding))
+            {
+                CurrentBuilding.transform.position = hit.point;
+            }
+            if (Input.GetMouseButtonDown(0) && GameManager.Instance.NumIntersection == 0 && !EventSystem.current.IsPointerOverGameObject())
+            {
+                CurrentBuilding.tag = "Untagged";
+                CurrentBuilding.GetComponent<Building>().BuildingDelay = 0.5f;
+                CurrentBuilding.GetComponent<BoxCollider>().isTrigger = false;
+                CurrentBuilding.GetComponent<NavMeshObstacle>().enabled = true;
+                buildingDelay = 0.5f;
+                CurrentBuilding = null;
+            }
+        }
+        if(buildingDelay > 0)//Уменьшаем таймер дилэя
+            buildingDelay -= Time.deltaTime;
     }
 
     void SelectObjects()
@@ -163,7 +202,12 @@ public class InputManager : MonoBehaviour {
 
     public void BuildButton()
     {
-        Building.BuildByName("Farm");
+        CurrentBuilding = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/Buildings/Farm"));
+        CurrentBuilding.GetComponent<Building>().Name = "Farm";
+        CurrentBuilding.GetComponent<Building>().Owner = GameManager.MyPlayer;
+        CurrentBuilding.tag = "CurBuild";
+        CurrentBuilding.GetComponent<BoxCollider>().isTrigger = true;
+        CurrentBuilding.GetComponent<NavMeshObstacle>().enabled = false;
     }
 }
 

@@ -5,18 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider))]
 public class Building : Interactable{
 
-    [SerializeField]
-    private bool isCurrentBuild = false;
-
-    public static void BuildByName(string buildingName)
-    {
-        Debug.Log("Build: " + buildingName);
-        GameObject go = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/Buildings/" + buildingName), new Vector3(50, 1, 50), Quaternion.identity);
-        go.GetComponent<Building>().Name = buildingName;
-        go.GetComponent<Building>().Owner = GameManager.MyPlayer;
-        go.GetComponent<BoxCollider>().isTrigger = true;
-        go.GetComponent<Building>().isCurrentBuild = true;
-    }
+    public float BuildingDelay;
 
     void Start()
     {
@@ -26,31 +15,24 @@ public class Building : Interactable{
 
     void Update()
     {
-        if (isCurrentBuild)
-        {
-            Ray ray;
-            RaycastHit hit;
-            ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if(Physics.Raycast(ray, out hit))
-            {
-                this.transform.position = hit.point;
-                Debug.Log(GameManager.Instance.NumIntersection);
-            }
-        }
+        if (BuildingDelay > 0) BuildingDelay -= Time.deltaTime;
     }
 
     public void OnTriggerEnter(Collider other)
     {
-        GameManager.Instance.NumIntersection++;
+        if (other.tag == "CurBuild")
+            GameManager.Instance.NumIntersection++;
     }
 
     public void OnTriggerExit(Collider other)
     {
-        GameManager.Instance.NumIntersection--;
+        if (other.tag == "CurBuild")
+            GameManager.Instance.NumIntersection--;
     }
 
     public override void OnMouseDown()
     {
-        GameManager.MyPlayer.AddSelectedObject(this);
+        if (BuildingDelay <= 0 && GameManager.Instance.GetComponent<InputManager>().CurrentBuilding == null) Debug.Log("Click at Building");
+        //GameManager.MyPlayer.AddSelectedObject(this);
     }
 }
