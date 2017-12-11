@@ -1624,6 +1624,7 @@ MonoBehaviour:
     z: -1
   - x: 1.5
     z: -1
+  CurrentBuilding: {fileID: 0}
 --- !u!1 &851204637
 GameObject:
   m_ObjectHideFlags: 0
