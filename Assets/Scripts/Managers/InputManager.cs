@@ -6,6 +6,12 @@ using UnityEngine.EventSystems;
 
 public class InputManager : MonoBehaviour {
 
+    /*Таблица курсоров
+    0 - Обычный
+    1 - Постройка
+    */
+    public Texture2D[] CustomCursor;
+
     public LayerMask MaskForBuilding;
 
     public RectTransform SelectableZone;
@@ -32,6 +38,8 @@ public class InputManager : MonoBehaviour {
     void Start () {
         mainCanvas = GameObject.Find("Canvas").GetComponent<Canvas>();
         scaleFactor = mainCanvas.scaleFactor;
+        //Инициализация курсора
+        Cursor.SetCursor(CustomCursor[0], Vector2.zero, CursorMode.Auto);
     }
 
     // Update is called once per frame
@@ -119,6 +127,7 @@ public class InputManager : MonoBehaviour {
             {
                 GameObject.DestroyImmediate(CurrentBuilding);
                 CurrentBuilding = null;
+                Cursor.SetCursor(CustomCursor[0], Vector2.zero, CursorMode.Auto);
             }
             else
             {
@@ -155,6 +164,7 @@ public class InputManager : MonoBehaviour {
                 CurrentBuilding.GetComponent<NavMeshObstacle>().enabled = true;
                 buildingDelay = 0.5f;
                 CurrentBuilding = null;
+                Cursor.SetCursor(CustomCursor[0], Vector2.zero, CursorMode.Auto);
             }
         }
         if(buildingDelay > 0)//Уменьшаем таймер дилэя
@@ -208,6 +218,7 @@ public class InputManager : MonoBehaviour {
         CurrentBuilding.tag = "CurBuild";
         CurrentBuilding.GetComponent<BoxCollider>().isTrigger = true;
         CurrentBuilding.GetComponent<NavMeshObstacle>().enabled = false;
+        Cursor.SetCursor(CustomCursor[1], Vector2.zero, CursorMode.Auto);
     }
 }
 

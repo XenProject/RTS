@@ -60,10 +60,6 @@ public class Player{
         if (clear) ClearSelectedUnits();//Очищаем список выделенных юнитов
         Selected.Add(selectedObj);//Добаляем нового юнита в этот список
 
-        //Создаем иконку на панели выделенных юнитов
-        selectedObj.SelectedIcon = GameObject.Instantiate( Resources.Load<GameObject>("Prefabs/UI/SelectedIcon"), GameManager.Instance.SelectedPanel.transform );
-        selectedObj.SelectedIcon.GetComponent<Image>().sprite = selectedObj.Icon;
-        //
         //Рисуем круг под выделенным юнитом в зависимости от команды
         Projector proj = selectedObj.GetComponentInChildren<Projector>();
         if (GameManager.MyPlayer == selectedObj.Owner)
@@ -75,8 +71,20 @@ public class Player{
             proj.material.SetTexture("_ShadowTex", GameManager.Instance.CircleEnemy);
         }
         proj.enabled = true;//Включаем отображение круга
-        //Сортировка****Надо будет оптимизировать, чтобы не вызывалась при добавлении каждого юнита
-        SortSelectedList();
+
+        if (selectedObj is Unit)
+        {
+            //Создаем иконку на панели выделенных юнитов
+            selectedObj.SelectedIcon = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/UI/SelectedIcon"), GameManager.Instance.SelectedPanel.transform);
+            selectedObj.SelectedIcon.GetComponent<Image>().sprite = selectedObj.Icon;
+            //
+            //Сортировка****Надо будет оптимизировать, чтобы не вызывалась при добавлении каждого юнита
+            SortSelectedList();
+        }
+        else
+        {
+            ActivatePortrait(selected[0]);
+        }    
     }
 
     public void AddUnitToAllUnits(Unit newUnit)
@@ -158,10 +166,7 @@ public class Player{
         else
             GameManager.Instance.BuildingButton.SetActive(false);
 
-        GameManager.Instance.Portrait.sprite = nowSelectedType.Icon;//Изменяем портрет на выбранный тип
-        GameManager.Instance.Portrait.gameObject.SetActive(true);//Включаем портрет
-        GameManager.Instance.UnitName.text = nowSelectedType.Name;//Пишем имя
-        GameManager.Instance.UnitName.gameObject.SetActive(true);
+        ActivatePortrait(nowSelectedType);
 
         ActivateOneTypeUnits();
     }
@@ -192,5 +197,13 @@ public class Player{
             return true;
         }
         return false;
+    }
+
+    private void ActivatePortrait(Interactable obj)
+    {
+        GameManager.Instance.Portrait.sprite = obj.Icon;//Изменяем портрет на выбранный тип
+        GameManager.Instance.Portrait.gameObject.SetActive(true);//Включаем портрет
+        GameManager.Instance.UnitName.text = obj.Name;//Пишем имя
+        GameManager.Instance.UnitName.gameObject.SetActive(true);
     }
 }

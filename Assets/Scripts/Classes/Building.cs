@@ -32,7 +32,9 @@ public class Building : Interactable{
 
     public override void OnMouseDown()
     {
-        if (BuildingDelay <= 0 && GameManager.Instance.GetComponent<InputManager>().CurrentBuilding == null) Debug.Log("Click at Building");
-        //GameManager.MyPlayer.AddSelectedObject(this);
+        if (BuildingDelay <= 0 && GameManager.Instance.GetComponent<InputManager>().CurrentBuilding == null)
+        {
+            GameManager.MyPlayer.AddSelectedObject(this);
+        }
     }
 }

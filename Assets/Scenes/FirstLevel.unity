@@ -1531,7 +1531,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1368873cf9c23734984969b92cf91cc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CustomCursor: {fileID: 2800000, guid: 07603a3f780182a4898bae6f97ebb5b2, type: 3}
   Portrait: {fileID: 182734260}
   UnitName: {fileID: 747837873}
   SelectedPanel: {fileID: 1710533098}
@@ -1594,6 +1593,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d567efdcee68e846a6dc81da6f526e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CustomCursor:
+  - {fileID: 2800000, guid: 07603a3f780182a4898bae6f97ebb5b2, type: 3}
+  - {fileID: 2800000, guid: 502a3e2b01aac22498dcf4169d2c6ff6, type: 3}
+  - {fileID: 2800000, guid: cad3f39141531da46a583dd505b92aae, type: 3}
+  - {fileID: 2800000, guid: f8df8c8fc399e6746b096c64aadb2902, type: 3}
   MaskForBuilding:
     serializedVersion: 2
     m_Bits: 1

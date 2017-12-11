@@ -4,8 +4,6 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour {
 
-    public Texture2D CustomCursor;
-
     public Image Portrait;
     public Text UnitName;
     public GameObject SelectedPanel;
@@ -21,8 +19,6 @@ public class GameManager : MonoBehaviour {
 
     public int NumIntersection = 0;
 
-    private CursorMode cursorMode = CursorMode.Auto;
-
     #region Singleton
     public static GameManager Instance;
     public void Awake()
@@ -32,8 +28,6 @@ public class GameManager : MonoBehaviour {
     #endregion
 	// Use this for initialization
 	void Start () {
-        //Инициализация курсора
-        Cursor.SetCursor(CustomCursor, Vector2.zero, cursorMode );
         //Инициализация всех игроков
         for (int i = 0; i < allPlayers.Length; i++)
         {
