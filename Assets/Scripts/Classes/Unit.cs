@@ -12,6 +12,7 @@ public class Unit : Interactable
     [SerializeField]
     private bool isBuilder;
 
+    private Building currentBuilding;
     private int priority;
 
     public NavMeshAgent Agent
@@ -69,12 +70,6 @@ public class Unit : Interactable
             GameManager.MyPlayer.AddSelectedObject(this);
     }
 
-    void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, Radius);
-    }
-
     void Update()
     {
         if (target != null)
@@ -85,17 +80,39 @@ public class Unit : Interactable
         {
             SelectedIcon.transform.GetChild(0).GetComponent<Image>().fillAmount = GetHealthPercentage();
         }
+        if(currentBuilding != null)
+        {
+            if(agent.remainingDistance <= currentBuilding.Radius)
+            {
+                currentBuilding.GetComponent<MeshRenderer>().material.color = Color.white;
+                currentBuilding.Planed = false;
+                currentBuilding = null;
+                agent.isStopped = true;
+                agent.ResetPath();
+            }
+        }
+    }
+
+    private void DeleteCurrentBuilding()
+    {
+        if (currentBuilding != null)
+        {
+            GameObject.DestroyImmediate(currentBuilding.gameObject);
+            currentBuilding = null;
+        }
     }
 
     public void MoveToPoint(Vector3 targetPoint)
     {
+        DeleteCurrentBuilding();
         RemoveFocus();
         agent.SetDestination(targetPoint);
     }
 
     public void SetFocus(Transform target)
     {
-        agent.stoppingDistance = target.GetComponent<Interactable>().Radius * 0.8f;
+        DeleteCurrentBuilding();
+        agent.stoppingDistance = target.GetComponent<Interactable>().Radius;
         this.target = target;
     }
 
@@ -112,6 +129,16 @@ public class Unit : Interactable
             return true;
         }
         return false;
+    }
+
+    public void Build(GameObject building)
+    {
+        DeleteCurrentBuilding();
+        if (isBuilder)
+        {
+            agent.SetDestination(building.transform.position);
+            currentBuilding = building.GetComponent<Building>();
+        }
     }
     /*
     public static bool operator <(Unit left, Unit right)

@@ -49,7 +49,7 @@ public class InputManager : MonoBehaviour {
         if (CurrentBuilding==null && buildingDelay <= 0)//Проверям строим ли мы сейчас или последние 0,5сек
         {
             //Левая кнопка мыши
-            if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
+            if (Input.GetMouseButtonDown(0))
             {
                 RaycastHit hit;
                 if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit))
@@ -59,7 +59,7 @@ public class InputManager : MonoBehaviour {
                 SelectableZone.gameObject.SetActive(true);
                 mousePos1 = Camera.main.ScreenToViewportPoint(Input.mousePosition);
             }
-            if (Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject())
+            if (Input.GetMouseButtonUp(0))
             {
                 SelectableZone.gameObject.SetActive(false);
                 mousePos2 = Camera.main.ScreenToViewportPoint(Input.mousePosition);
@@ -68,7 +68,7 @@ public class InputManager : MonoBehaviour {
                     SelectObjects();
                 }
             }
-            if (Input.GetMouseButton(0) && !EventSystem.current.IsPointerOverGameObject())
+            if (Input.GetMouseButton(0))
             {
                 endPos = Input.mousePosition;
                 Vector3 squareStart = Camera.main.WorldToScreenPoint(startPos);
@@ -168,11 +168,11 @@ public class InputManager : MonoBehaviour {
             if (Input.GetMouseButtonDown(0) && GameManager.Instance.NumIntersection == 0 && !EventSystem.current.IsPointerOverGameObject())
             {
                 CurrentBuilding.tag = "Untagged";
-                CurrentBuilding.GetComponent<Building>().BuildingDelay = 0.5f;
+                buildingDelay = 0.5f;
                 CurrentBuilding.GetComponent<BoxCollider>().isTrigger = false;
                 CurrentBuilding.GetComponent<NavMeshObstacle>().enabled = true;
-                buildingDelay = 0.5f;
-                CurrentBuilding.GetComponent<MeshRenderer>().material.color = Color.white;
+                CurrentBuilding.GetComponent<Building>().Planed = true;
+                (GameManager.MyPlayer.Selected.Find(unit => unit == GameManager.MyPlayer.GetNowSelectedType()) as Unit).Build(CurrentBuilding);
                 CurrentBuilding = null;
                 SetCursorByName();
             }

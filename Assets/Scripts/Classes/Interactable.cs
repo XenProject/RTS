@@ -38,6 +38,12 @@ public abstract class Interactable : MonoBehaviour
 
     public abstract void OnMouseDown();
 
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, Radius);
+    }
+
     /*public static bool operator ==(Interactable left, Interactable right)
     {
         if (left.Equals(null)) return false;

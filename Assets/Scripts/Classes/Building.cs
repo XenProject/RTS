@@ -6,7 +6,8 @@ using UnityEngine.EventSystems;
 [RequireComponent(typeof(BoxCollider))]
 public class Building : Interactable{
 
-    public float BuildingDelay;
+    public bool Planed = false;
+    //private float buildingDelay;
 
     void Start()
     {
@@ -16,7 +17,7 @@ public class Building : Interactable{
 
     void Update()
     {
-        if (BuildingDelay > 0) BuildingDelay -= Time.deltaTime;
+        //if (buildingDelay > 0) buildingDelay -= Time.deltaTime;
     }
 
     public void OnTriggerEnter(Collider other)
@@ -35,7 +36,7 @@ public class Building : Interactable{
     {
         if (!EventSystem.current.IsPointerOverGameObject())
         {
-            if (BuildingDelay <= 0 && GameManager.Instance.GetComponent<InputManager>().CurrentBuilding == null)
+            if (/*buildingDelay <= 0 && */!Planed && this.tag != "CurBuild")
             {
                 GameManager.MyPlayer.AddSelectedObject(this);
             }
