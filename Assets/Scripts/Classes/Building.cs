@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(BoxCollider))]
 public class Building : Interactable{
@@ -32,9 +33,12 @@ public class Building : Interactable{
 
     public override void OnMouseDown()
     {
-        if (BuildingDelay <= 0 && GameManager.Instance.GetComponent<InputManager>().CurrentBuilding == null)
+        if (!EventSystem.current.IsPointerOverGameObject())
         {
-            GameManager.MyPlayer.AddSelectedObject(this);
+            if (BuildingDelay <= 0 && GameManager.Instance.GetComponent<InputManager>().CurrentBuilding == null)
+            {
+                GameManager.MyPlayer.AddSelectedObject(this);
+            }
         }
     }
 }

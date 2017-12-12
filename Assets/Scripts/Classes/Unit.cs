@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class Unit : Interactable
@@ -64,7 +65,8 @@ public class Unit : Interactable
 
     public override void OnMouseDown()
     {
-        GameManager.MyPlayer.AddSelectedObject(this);
+        if(!EventSystem.current.IsPointerOverGameObject())
+            GameManager.MyPlayer.AddSelectedObject(this);
     }
 
     void OnDrawGizmosSelected()
