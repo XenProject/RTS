@@ -2,10 +2,17 @@
 using UnityEngine.AI;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using System.Collections;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class Unit : Interactable
 {
+    public float attackSpeed;
+
+    private float attackCooldown = 0f;
+    private float attackDelay;
+    private int damage;
+
     private NavMeshAgent agent;
     [SerializeField]
     private Transform target;
@@ -62,6 +69,9 @@ public class Unit : Interactable
         IsBuilder = false;
         Name = "TestUnit";
         Priority = 0;
+        damage = 20;
+        attackSpeed = 1f;
+        attackDelay = 0.3f;
     }
 
     public override void OnMouseDown()
@@ -72,9 +82,21 @@ public class Unit : Interactable
 
     void Update()
     {
+        if (attackCooldown > 0) attackCooldown -= Time.deltaTime;
         if (target != null)
         {
             agent.SetDestination(target.position);
+            Interactable targetObj = target.GetComponent<Interactable>();
+            if ( targetObj.Owner != this.Owner && attackCooldown <= 0)
+            {
+                float distance = Vector3.Distance(target.position, transform.position);
+                if(distance <= agent.stoppingDistance)
+                {
+                    StartCoroutine(DoDamage(targetObj, attackDelay));
+                    attackCooldown = 1f / attackSpeed;
+                    GetComponent<Animator>().SetTrigger("attack");
+                }
+            }
         }
         if (SelectedIcon != null)
         {
@@ -82,12 +104,14 @@ public class Unit : Interactable
         }
         if(currentBuilding != null)
         {
-            if(agent.remainingDistance <= currentBuilding.Radius)
+            float distance = Vector3.Distance(currentBuilding.transform.position, transform.position);
+            if(distance <= agent.stoppingDistance)
             {
                 currentBuilding.GetComponent<MeshRenderer>().material.color = Color.white;
+                currentBuilding.GetComponent<NavMeshObstacle>().enabled = true;
                 currentBuilding.Planed = false;
                 currentBuilding = null;
-                agent.isStopped = true;
+                RemoveFocus();
                 agent.ResetPath();
             }
         }
@@ -112,6 +136,7 @@ public class Unit : Interactable
     public void SetFocus(Transform target)
     {
         DeleteCurrentBuilding();
+
         agent.stoppingDistance = target.GetComponent<Interactable>().Radius;
         this.target = target;
     }
@@ -119,7 +144,7 @@ public class Unit : Interactable
     public void RemoveFocus()
     {
         target = null;
-        agent.stoppingDistance = 0.5f;
+        agent.stoppingDistance = 0f;
     }
 
     public bool CompareWith(Unit unit)
@@ -133,12 +158,18 @@ public class Unit : Interactable
 
     public void Build(GameObject building)
     {
-        DeleteCurrentBuilding();
         if (isBuilder)
         {
-            agent.SetDestination(building.transform.position);
+            SetFocus(building.transform);
             currentBuilding = building.GetComponent<Building>();
         }
+    }
+
+    IEnumerator DoDamage(Interactable target, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if(target != null)
+            target.TakeDamage(damage);
     }
     /*
     public static bool operator <(Unit left, Unit right)

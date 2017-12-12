@@ -49,13 +49,22 @@ public class GameManager : MonoBehaviour {
         GameObject[] units = GameObject.FindGameObjectsWithTag("Player0");
         foreach(GameObject unit in units)
         {
-            unit.GetComponent<Unit>().Owner = MyPlayer;
-            MyPlayer.AddUnitToAllUnits(unit.GetComponent<Unit>());
+            unit.GetComponent<Unit>().Owner = allPlayers[0];
+            allPlayers[0].AddUnitToAllUnits(unit.GetComponent<Unit>());
         }
         //*****************Debugging******************
         units[units.Length - 1].GetComponent<Unit>().Name = "Other";
         units[units.Length - 1].GetComponent<Unit>().Priority = 1;
         units[units.Length - 1].GetComponent<Unit>().IsBuilder = true;
+        //
+        //Присвоение юнитов с тегом "Player0" нулевому игроку
+        units = GameObject.FindGameObjectsWithTag("Player1");
+        foreach (GameObject unit in units)
+        {
+            unit.GetComponent<Unit>().Owner = allPlayers[1];
+            allPlayers[1].AddUnitToAllUnits(unit.GetComponent<Unit>());
+        }
+        //
         //Debug.Log( units[0].GetComponent<Unit>().Equals(units[1].GetComponent<Unit>() ) );
         //
     }

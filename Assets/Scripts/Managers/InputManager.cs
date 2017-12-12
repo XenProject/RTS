@@ -170,7 +170,6 @@ public class InputManager : MonoBehaviour {
                 CurrentBuilding.tag = "Untagged";
                 buildingDelay = 0.5f;
                 CurrentBuilding.GetComponent<BoxCollider>().isTrigger = false;
-                CurrentBuilding.GetComponent<NavMeshObstacle>().enabled = true;
                 CurrentBuilding.GetComponent<Building>().Planed = true;
                 (GameManager.MyPlayer.Selected.Find(unit => unit == GameManager.MyPlayer.GetNowSelectedType()) as Unit).Build(CurrentBuilding);
                 CurrentBuilding = null;
