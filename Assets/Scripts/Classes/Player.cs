@@ -19,6 +19,11 @@ public class Player{
     [SerializeField]
     public List<Unit> AllUnits;
 
+    public Unit GetNowSelectedType()
+    {
+        return nowSelectedType;
+    }
+
     public int TeamNumber
     {
         get

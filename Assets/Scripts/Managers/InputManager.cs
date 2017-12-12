@@ -9,7 +9,10 @@ public class InputManager : MonoBehaviour {
     /*Таблица курсоров
     0 - Обычный
     1 - Постройка
+    2 - Атака
+    3 - Загрузка
     */
+    [SerializeField]
     public Texture2D[] CustomCursor;
 
     public LayerMask MaskForBuilding;
@@ -23,7 +26,6 @@ public class InputManager : MonoBehaviour {
     private Vector3 startPos;
     private Vector3 endPos;
     private Canvas mainCanvas;
-    private float scaleFactor;
     //
     //Для выделения юнитов в SelectableZone
     private Vector2 mousePos1;
@@ -37,15 +39,14 @@ public class InputManager : MonoBehaviour {
     // Use this for initialization
     void Start () {
         mainCanvas = GameObject.Find("Canvas").GetComponent<Canvas>();
-        scaleFactor = mainCanvas.scaleFactor;
         //Инициализация курсора
-        Cursor.SetCursor(CustomCursor[0], Vector2.zero, CursorMode.Auto);
+        SetCursorByName();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (CurrentBuilding==null && buildingDelay <= 0)//Проверям строим ли мы сейчас или последнии 0,5сек
+        if (CurrentBuilding==null && buildingDelay <= 0)//Проверям строим ли мы сейчас или последние 0,5сек
         {
             //Левая кнопка мыши
             if (Input.GetMouseButtonDown(0))
@@ -79,7 +80,7 @@ public class InputManager : MonoBehaviour {
                 float sizeY = Mathf.Abs(squareStart.y - endPos.y);
 
                 SelectableZone.sizeDelta = new Vector2(sizeX, sizeY);
-                SelectableZone.sizeDelta /= scaleFactor;//Отменяем Scale Factor
+                SelectableZone.sizeDelta /= mainCanvas.scaleFactor;//Отменяем Scale Factor
             }
         }
         //Правая кнопка мыши
@@ -127,7 +128,7 @@ public class InputManager : MonoBehaviour {
             {
                 GameObject.DestroyImmediate(CurrentBuilding);
                 CurrentBuilding = null;
-                Cursor.SetCursor(CustomCursor[0], Vector2.zero, CursorMode.Auto);
+                SetCursorByName();
             }
             else
             {
@@ -149,6 +150,14 @@ public class InputManager : MonoBehaviour {
 
         if (CurrentBuilding != null)
         {
+            if (GameManager.Instance.NumIntersection == 0)
+            {
+                CurrentBuilding.GetComponent<MeshRenderer>().material.color = Color.green;
+            }
+            else
+            {
+                CurrentBuilding.GetComponent<MeshRenderer>().material.color = Color.red;
+            }
             Ray ray;
             RaycastHit hit;
             ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -159,12 +168,13 @@ public class InputManager : MonoBehaviour {
             if (Input.GetMouseButtonDown(0) && GameManager.Instance.NumIntersection == 0 && !EventSystem.current.IsPointerOverGameObject())
             {
                 CurrentBuilding.tag = "Untagged";
-                CurrentBuilding.GetComponent<Building>().BuildingDelay = 0.5f;
+                buildingDelay = 0.5f;
                 CurrentBuilding.GetComponent<BoxCollider>().isTrigger = false;
                 CurrentBuilding.GetComponent<NavMeshObstacle>().enabled = true;
-                buildingDelay = 0.5f;
+                CurrentBuilding.GetComponent<Building>().Planed = true;
+                (GameManager.MyPlayer.Selected.Find(unit => unit == GameManager.MyPlayer.GetNowSelectedType()) as Unit).Build(CurrentBuilding);
                 CurrentBuilding = null;
-                Cursor.SetCursor(CustomCursor[0], Vector2.zero, CursorMode.Auto);
+                SetCursorByName();
             }
         }
         if(buildingDelay > 0)//Уменьшаем таймер дилэя
@@ -218,7 +228,30 @@ public class InputManager : MonoBehaviour {
         CurrentBuilding.tag = "CurBuild";
         CurrentBuilding.GetComponent<BoxCollider>().isTrigger = true;
         CurrentBuilding.GetComponent<NavMeshObstacle>().enabled = false;
-        Cursor.SetCursor(CustomCursor[1], Vector2.zero, CursorMode.Auto);
+        SetCursorByName("Building");
+    }
+
+    public void SetCursorByName(string cursorName = "Default")
+    {
+        int index = 0;
+        switch (cursorName)
+        {
+            case "Default":
+                index = 0;
+                break;
+            case "Building":
+                index = 1;
+                break;
+            case "Attack":
+                index = 2;
+                break;
+            case "Loading":
+                index = 3;
+                break;
+            default:
+                break;
+        }
+        Cursor.SetCursor(CustomCursor[index], Vector2.zero, CursorMode.Auto);
     }
 }
 
