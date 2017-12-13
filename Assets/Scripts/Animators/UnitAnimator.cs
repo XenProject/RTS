@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class PlayerAnimator : MonoBehaviour {
+public class UnitAnimator : MonoBehaviour {
 
-    const float locomationAnimationSmoothTime = 0.1f;
+    const float locomotionAnimationSmoothTime = 0.1f;
 
     NavMeshAgent agent;
-    Animator animator;
+    public Animator animator;
 
 	// Use this for initialization
 	void Start () {

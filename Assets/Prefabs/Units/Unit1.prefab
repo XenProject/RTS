@@ -1455,6 +1455,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1dffa3346f3e8e458aae550aa5edfc1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  animator: {fileID: 0}
 --- !u!114 &114815754473715752
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1468,7 +1469,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Icon: {fileID: 21300000, guid: d3cf0f088f52f1d47bb2b3c6ef2889c3, type: 3}
   SelectedIcon: {fileID: 0}
-  Radius: 2
+  Radius: 1
   Owner:
     isBot: 0
     teamNumber: 0
@@ -1487,6 +1488,7 @@ MonoBehaviour:
   Name: 
   curHealth: 0
   maxHealth: 0
+  attackSpeed: 0
   target: {fileID: 0}
   isBuilder: 0
 --- !u!119 &119331897589057622

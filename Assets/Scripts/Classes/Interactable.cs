@@ -36,6 +36,18 @@ public abstract class Interactable : MonoBehaviour
         return (float)curHealth / maxHealth;
     }
 
+    public void TakeDamage(int damage)
+    {
+        this.curHealth -= damage;
+        if (curHealth <= 0) Die();
+        if (curHealth > maxHealth) curHealth = maxHealth;
+    }
+
+    public void Die()
+    {
+        GameObject.DestroyImmediate(this.gameObject);
+    }
+
     public abstract void OnMouseDown();
 
     void OnDrawGizmosSelected()
