@@ -3,6 +3,7 @@ using UnityEngine.AI;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using System.Collections;
+using System;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class Unit : Interactable
@@ -21,6 +22,7 @@ public class Unit : Interactable
 
     private Building currentBuilding;
     private int priority;
+    private bool isAttack = false;
 
     public NavMeshAgent Agent
     {
@@ -95,12 +97,15 @@ public class Unit : Interactable
                     StartCoroutine(DoDamage(targetObj, attackDelay));
                     attackCooldown = 1f / attackSpeed;
                     GetComponent<Animator>().SetTrigger("attack");
+                    isAttack = true;
                 }
             }
         }
         if (SelectedIcon != null)
         {
-            SelectedIcon.transform.GetChild(0).GetComponent<Image>().fillAmount = GetHealthPercentage();
+            float lifePrt = GetHealthPercentage();
+            SelectedIcon.transform.GetChild(0).GetComponent<Image>().fillAmount = lifePrt;
+            SelectedIcon.transform.GetChild(0).GetComponent<Image>().color = Color.Lerp(Color.red, Color.green, lifePrt);
         }
         if(currentBuilding != null)
         {
@@ -128,17 +133,22 @@ public class Unit : Interactable
 
     public void MoveToPoint(Vector3 targetPoint)
     {
-        DeleteCurrentBuilding();
-        RemoveFocus();
-        agent.SetDestination(targetPoint);
+        if (!isAttack)
+        {
+            DeleteCurrentBuilding();
+            RemoveFocus();
+            agent.SetDestination(targetPoint);
+        }
     }
 
     public void SetFocus(Transform target)
     {
-        DeleteCurrentBuilding();
-
-        agent.stoppingDistance = target.GetComponent<Interactable>().Radius;
-        this.target = target;
+        if (!isAttack)
+        {
+            DeleteCurrentBuilding();
+            agent.stoppingDistance = target.GetComponent<Interactable>().Radius;
+            this.target = target;
+        }
     }
 
     public void RemoveFocus()
@@ -170,6 +180,12 @@ public class Unit : Interactable
         yield return new WaitForSeconds(delay);
         if(target != null)
             target.TakeDamage(damage);
+        //isAttack = false;
+    }
+
+    public void AttackEnd()
+    {
+        isAttack = false;
     }
     /*
     public static bool operator <(Unit left, Unit right)
