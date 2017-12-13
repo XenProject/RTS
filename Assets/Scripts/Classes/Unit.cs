@@ -8,6 +8,7 @@ using System;
 [RequireComponent(typeof(NavMeshAgent))]
 public class Unit : Interactable
 {
+    public Image HealthBarFill;
     public float attackSpeed;
 
     private float attackCooldown = 0f;
@@ -84,6 +85,10 @@ public class Unit : Interactable
 
     void Update()
     {
+        float lifePrt = GetHealthPercentage();
+        HealthBarFill.fillAmount = lifePrt;
+        HealthBarFill.color = Color.Lerp(Color.red, Color.green, lifePrt);
+
         if (attackCooldown > 0) attackCooldown -= Time.deltaTime;
         if (target != null)
         {
@@ -103,7 +108,6 @@ public class Unit : Interactable
         }
         if (SelectedIcon != null)
         {
-            float lifePrt = GetHealthPercentage();
             SelectedIcon.transform.GetChild(0).GetComponent<Image>().fillAmount = lifePrt;
             SelectedIcon.transform.GetChild(0).GetComponent<Image>().color = Color.Lerp(Color.red, Color.green, lifePrt);
         }

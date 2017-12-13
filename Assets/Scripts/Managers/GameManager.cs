@@ -41,7 +41,7 @@ public class GameManager : MonoBehaviour {
         for(int i = 0; i < MyPlayer.GetAllResources().Length; i++)
         {
             GameObject go = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/UI/Resource"), GameManager.Instance.ResourcePanel.transform);
-            go.GetComponentInChildren<Image>().sprite = Resources.Load<Sprite>("Sprites/UI/Resources/" + (ResourceType)i);
+            go.transform.GetChild(0).GetChild(0).GetComponent<Image>().sprite = Resources.Load<Sprite>("Sprites/UI/Resources/" + (ResourceType)i);
             go.GetComponentInChildren<Text>().text = MyPlayer.GetAllResources()[i].CurrentValue.ToString();
         }
         //
@@ -57,7 +57,7 @@ public class GameManager : MonoBehaviour {
         units[units.Length - 1].GetComponent<Unit>().Priority = 1;
         units[units.Length - 1].GetComponent<Unit>().IsBuilder = true;
         //
-        //Присвоение юнитов с тегом "Player0" нулевому игроку
+        //Присвоение юнитов с тегом "Player1" первому игроку
         units = GameObject.FindGameObjectsWithTag("Player1");
         foreach (GameObject unit in units)
         {

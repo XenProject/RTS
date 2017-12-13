@@ -15,6 +15,8 @@ public class InputManager : MonoBehaviour {
     [SerializeField]
     public Texture2D[] CustomCursor;
 
+    public GameObject GroundMarker;
+
     public LayerMask MaskForBuilding;
 
     public RectTransform SelectableZone;
@@ -105,6 +107,8 @@ public class InputManager : MonoBehaviour {
                         break;
                     case "Default":
                         int i = 0;
+                        GroundMarker.transform.position = hit.point;
+                        GroundMarker.GetComponentInChildren<ParticleSystem>().Emit(1);
                         foreach (Interactable unit in GameManager.MyPlayer.Selected)
                         {
                             if (unit.GetComponent<Unit>() != null)
