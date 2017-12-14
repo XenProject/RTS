@@ -54,18 +54,15 @@ public abstract class Interactable : MonoBehaviour
     public void Die()
     {
         Player player = GameManager.MyPlayer;
-        if(player.GetNowSelectedType() == this)
+        if (this as Unit)
         {
-            if (this as Unit)
-            {
-                player.FindOnDie(this);
-                Owner.AllUnits.Remove(this as Unit);
-            }
-            else
-            {
-                player.SetupNowSelected(-1);
-            }
+            Owner.AllUnits.Remove(this as Unit);
         }
+        if (this.SelectedIcon != null)
+            player.FindOnDie(this);
+        else
+            GameObject.DestroyImmediate(this.gameObject);
+        return;
     }
 
     public abstract void OnMouseDown();
