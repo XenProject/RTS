@@ -85,8 +85,11 @@ public class Unit : Interactable
 
     public override void OnMouseDown()
     {
-        if(!EventSystem.current.IsPointerOverGameObject())
+        if (!EventSystem.current.IsPointerOverGameObject())
+        {
             GameManager.MyPlayer.AddSelectedObject(this);
+            OnMouseEnter();
+        }    
     }
 
     void Update()
@@ -125,6 +128,8 @@ public class Unit : Interactable
                 currentBuilding.GetComponent<MeshRenderer>().material.color = Color.white;
                 currentBuilding.GetComponent<NavMeshObstacle>().enabled = true;
                 currentBuilding.Planed = false;
+                currentBuilding.transform.Find("MinimapIcon").GetComponent<MeshRenderer>().material.color = GameManager.Instance.TeamColors[Owner.TeamNumber];
+                currentBuilding.transform.Find("MinimapIcon").GetComponent<MeshRenderer>().enabled = true;
                 currentBuilding = null;
                 RemoveFocus();
                 agent.ResetPath();

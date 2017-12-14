@@ -59,7 +59,7 @@ public class CameraController : MonoBehaviour {
         for (int i = 0; i < 3 ; i++)
         {
             ray[i] = Camera.main.ViewportPointToRay(points[i]);
-            Physics.Raycast(ray[i], out hit[i], Mathf.Infinity, 1<<0);
+            Physics.Raycast(ray[i], out hit[i], Mathf.Infinity, 1 << LayerMask.NameToLayer("Level"));
             screenCorners[i] = hit[i].point;
             //Instantiate(go, vec[i], Quaternion.identity);
         }

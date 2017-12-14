@@ -53,16 +53,32 @@ public abstract class Interactable : MonoBehaviour
 
     public void Die()
     {
-        GameObject.DestroyImmediate(this.gameObject);
+        Player player = GameManager.MyPlayer;
+        if(player.GetNowSelectedType() == this)
+        {
+            if (this as Unit)
+            {
+                player.FindOnDie(this);
+                Owner.AllUnits.Remove(this as Unit);
+            }
+            else
+            {
+                player.SetupNowSelected(-1);
+            }
+        }
     }
 
     public abstract void OnMouseDown();
 
     public void OnMouseEnter()
     {
-        if(GameManager.MyPlayer != Owner && GameManager.MyPlayer.Selected.Count > 0)
+        if(GameManager.MyPlayer != Owner && GameManager.MyPlayer.Selected.Count > 0 && GameManager.MyPlayer.Selected[0].Owner != Owner)
         {
             GameManager.Instance.GetComponent<InputManager>().SetCursorByName("Attack");
+        }
+        else
+        {
+            GameManager.Instance.GetComponent<InputManager>().SetCursorByName();
         }
     }
 

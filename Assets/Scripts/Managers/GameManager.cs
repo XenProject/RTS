@@ -4,6 +4,9 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour {
 
+    public Text SizeText;
+    public Text VisualText;
+
     public Image Portrait;
     public Text UnitName;
     public GameObject InfoPanel;
@@ -19,10 +22,13 @@ public class GameManager : MonoBehaviour {
     public Texture CircleEnemy;
     public Texture CircleFriendly;
 
-    public Player[] allPlayers = new Player[2];//Таблица всех игроков
+    public Color[] TeamColors = new Color[2];
+    public Player[] AllPlayers = new Player[2];//Таблица всех игроков
     public static Player MyPlayer;//Это мы
 
     public int NumIntersection = 0;
+
+    public Unit unitForInfo;
 
     #region Singleton
     public static GameManager Instance;
@@ -34,14 +40,14 @@ public class GameManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         //Инициализация всех игроков
-        for (int i = 0; i < allPlayers.Length; i++)
+        for (int i = 0; i < AllPlayers.Length; i++)
         {
-            allPlayers[i] = new Player();
-            allPlayers[i].TeamNumber = i;
-            allPlayers[i].GetResourceByName("Gold").CurrentValue = 100;
+            AllPlayers[i] = new Player();
+            AllPlayers[i].TeamNumber = i;
+            AllPlayers[i].GetResourceByName("Gold").CurrentValue = 100;
         }
-        allPlayers[allPlayers.Length - 1].isBot = true;//Делаем последнего игрока Ботом(пока так***)
-        MyPlayer = allPlayers[0];
+        AllPlayers[AllPlayers.Length - 1].isBot = true;//Делаем последнего игрока Ботом(пока так***)
+        MyPlayer = AllPlayers[0];
         //Перенос на панель ресурсов
         for(int i = 0; i < MyPlayer.GetAllResources().Length; i++)
         {
@@ -54,8 +60,9 @@ public class GameManager : MonoBehaviour {
         GameObject[] units = GameObject.FindGameObjectsWithTag("Player0");
         foreach(GameObject unit in units)
         {
-            unit.GetComponent<Unit>().Owner = allPlayers[0];
-            allPlayers[0].AddUnitToAllUnits(unit.GetComponent<Unit>());
+            unit.GetComponent<Unit>().Owner = AllPlayers[0];
+            AllPlayers[0].AddUnitToAllUnits(unit.GetComponent<Unit>());
+            unit.transform.Find("MinimapIcon").GetComponent<MeshRenderer>().material.color = TeamColors[0];
         }
         //*****************Debugging******************
         units[units.Length - 1].GetComponent<Unit>().Name = "Other";
@@ -66,8 +73,9 @@ public class GameManager : MonoBehaviour {
         units = GameObject.FindGameObjectsWithTag("Player1");
         foreach (GameObject unit in units)
         {
-            unit.GetComponent<Unit>().Owner = allPlayers[1];
-            allPlayers[1].AddUnitToAllUnits(unit.GetComponent<Unit>());
+            unit.GetComponent<Unit>().Owner = AllPlayers[1];
+            AllPlayers[1].AddUnitToAllUnits(unit.GetComponent<Unit>());
+            unit.transform.Find("MinimapIcon").GetComponent<MeshRenderer>().material.color = TeamColors[1];
         }
         //
         //Debug.Log( units[0].GetComponent<Unit>().Equals(units[1].GetComponent<Unit>() ) );
@@ -76,6 +84,17 @@ public class GameManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        
+        if (SizeText.gameObject.activeSelf)
+        {
+            VisualText.text = String.Format("{0}\nHealth: {1}/{2}", unitForInfo.Name, unitForInfo.GetHealth(), unitForInfo.GetMaxHealth());
+            SizeText.text = VisualText.text;
+            SizeText.transform.position = Input.mousePosition + (new Vector3(32, 32, 0) * GameObject.Find("Canvas").GetComponent<Canvas>().scaleFactor);
+        }
+    }
+
+    public void ShowUnitInfo(Unit unit)
+    {
+        unitForInfo = unit;
+        SizeText.gameObject.SetActive(true);
     }
 }

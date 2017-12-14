@@ -82,9 +82,10 @@ public class Player{
             //Создаем иконку на панели выделенных юнитов
             selectedObj.SelectedIcon = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/UI/SelectedIcon"), GameManager.Instance.SelectedPanel.transform);
             selectedObj.SelectedIcon.GetComponent<Image>().sprite = selectedObj.Icon;
+            selectedObj.SelectedIcon.GetComponent<SelectedIconInfo>().Parent = selectedObj as Unit;
+            SetupNowSelected(0);
             //
-            //Сортировка****Надо будет оптимизировать, чтобы не вызывалась при добавлении каждого юнита
-            SortSelectedList();
+            //SortSelectedList();
         }
         else
         {
@@ -147,13 +148,16 @@ public class Player{
         {
             foreach (Unit unit in selected)
             {
-                if (unit.CompareWith(nowSelectedType)) unit.SelectedIcon.transform.GetChild(1).GetComponent<Image>().enabled = true;
+                if (unit.CompareWith(nowSelectedType))
+                {
+                    unit.SelectedIcon.transform.GetChild(1).GetComponent<Image>().enabled = true;
+                }
                 else unit.SelectedIcon.transform.GetChild(1).GetComponent<Image>().enabled = false;
             }
         }
     }
 
-    private void SetupNowSelected(int index)
+    public void SetupNowSelected(int index)
     {
         if (index == -1)//Если юнитов нет
         {
@@ -186,8 +190,12 @@ public class Player{
             FindNextSelected(0);
     }
 
-    private bool FindNextSelected(int beginIndex)
+    public bool FindNextSelected(int beginIndex)
     {
+        if (selected.Count == 0)
+        {
+            SetupNowSelected(-1);
+        }
         for (int i = beginIndex; i < selected.Count - 1; i++)
         {
             if ((selected[i] as Unit).CompareWith(selected[i + 1] as Unit)) continue;
@@ -203,6 +211,51 @@ public class Player{
             return true;
         }
         return false;
+    }
+
+    public void FindOnDie(Interactable type)
+    {
+        if (selected.Count == 1)
+        {
+            RemoveFromSelected(type);
+            SetupNowSelected(-1);
+            return;
+        }
+        int beginIndex = selected.IndexOf(type);
+
+        for (int i = beginIndex; i < selected.Count - 1; i++)
+        {
+            if ((type as Unit).CompareWith(selected[i + 1] as Unit))
+            {
+                SetupNowSelected(i + 1);
+                RemoveFromSelected(type);
+                return;
+            }
+        }
+        if ((type as Unit).CompareWith(selected[0] as Unit))
+        {
+            SetupNowSelected(0);
+            RemoveFromSelected(type);
+            return;
+        }
+        for (int i = 0; i < beginIndex - 1; i++)
+        {
+            if ((type as Unit).CompareWith(selected[i + 1] as Unit))
+            {
+                SetupNowSelected(i + 1);
+                RemoveFromSelected(type);
+                return;
+            }
+        }
+        RemoveFromSelected(type);
+        FindNextSelected(beginIndex-1);
+    }
+
+    private void RemoveFromSelected(Interactable obj)
+    {
+        GameManager.MyPlayer.Selected.Remove(obj);
+        GameObject.DestroyImmediate(obj.SelectedIcon);
+        GameObject.DestroyImmediate(obj.gameObject);
     }
 
     private void ActivatePortraitAndInfo(Interactable obj)

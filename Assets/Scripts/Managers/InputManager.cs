@@ -105,7 +105,7 @@ public class InputManager : MonoBehaviour {
                             else break;
                         }
                         break;
-                    case "Default":
+                    case "Level":
                         int i = 0;
                         GroundMarker.transform.position = hit.point;
                         GroundMarker.GetComponentInChildren<ParticleSystem>().Emit(1);
@@ -187,26 +187,29 @@ public class InputManager : MonoBehaviour {
 
     void SelectObjects()
     {
+        Player myPlayer = GameManager.MyPlayer;
         bool hasOne = false;
         Rect selectRect = new Rect(mousePos1.x, mousePos1.y, mousePos2.x - mousePos1.x, mousePos2.y - mousePos1.y);
-        foreach (Unit unit in GameManager.MyPlayer.AllUnits)
+
+        if (myPlayer.AllUnits.Count == 0) return;
+
+        foreach (Unit unit in myPlayer.AllUnits)
         {
-            if(unit != null)
+            if(selectRect.Contains(Camera.main.WorldToViewportPoint( unit.transform.position), true))
             {
-                if(selectRect.Contains(Camera.main.WorldToViewportPoint( unit.transform.position), true))
+                if (!hasOne)
                 {
-                    if (!hasOne)
-                    {
-                        GameManager.MyPlayer.ClearSelectedUnits();
-                        hasOne = true;
-                    }
-                    if(GameManager.MyPlayer.Selected.Count <= 12)
-                    {
-                        GameManager.MyPlayer.AddSelectedObject(unit, false);
-                    }
+                    myPlayer.ClearSelectedUnits();
+                    hasOne = true;
+                }
+                if(myPlayer.Selected.Count <= 12)
+                {
+                    myPlayer.AddSelectedObject(unit, false);
                 }
             }
         }
+
+        myPlayer.SortSelectedList();
     }
 
     public void MenuButton()
