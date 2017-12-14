@@ -90,7 +90,7 @@ public class InputManager : MonoBehaviour {
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
-            if (GameManager.MyPlayer.Selected.Count > 0 && GameManager.MyPlayer.Selected[0].Owner == GameManager.MyPlayer)
+            if (GameManager.MyPlayer.Selected.Count > 0 && GameManager.MyPlayer.Selected[0].Owner == GameManager.MyPlayer && GameManager.MyPlayer.Selected[0] as Unit)
             {
                 Physics.Raycast(ray, out hit, Mathf.Infinity);
                 switch (LayerMask.LayerToName(hit.transform.gameObject.layer))
@@ -208,8 +208,8 @@ public class InputManager : MonoBehaviour {
                 }
             }
         }
-
-        myPlayer.SortSelectedList();
+        if(hasOne)
+            myPlayer.SortSelectedList();
     }
 
     public void MenuButton()

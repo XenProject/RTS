@@ -266,14 +266,16 @@ public class Player{
         GameManager.Instance.UnitName.text = obj.Name;//Пишем имя
         GameManager.Instance.UnitName.gameObject.SetActive(true);
         //
-        GameManager.Instance.HealthText.text = obj.GetMaxHealth().ToString();
+        
         if(obj as Unit)
         {
             GameManager.Instance.DamageText.text = (obj as Unit).GetDamage().ToString();
             GameManager.Instance.DamageText.transform.parent.gameObject.SetActive(true);
+            GameManager.Instance.HealthText.text = obj.GetMaxHealth().ToString();
         }
         else
         {
+            GameManager.Instance.HealthText.text = obj.GetHealth().ToString() + "/" + obj.GetMaxHealth().ToString();
             GameManager.Instance.DamageText.transform.parent.gameObject.SetActive(false);
         }  
         GameManager.Instance.ArmorText.text = obj.GetArmor().ToString();
