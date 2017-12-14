@@ -20,6 +20,8 @@ public abstract class Interactable : MonoBehaviour
     protected int curHealth;
     [SerializeField]
     protected int maxHealth;
+    [SerializeField]
+    protected int armor;
 
     public int GetHealth()
     {
@@ -36,8 +38,14 @@ public abstract class Interactable : MonoBehaviour
         return (float)curHealth / maxHealth;
     }
 
+    public int GetArmor()
+    {
+        return armor;
+    }
+
     public void TakeDamage(int damage)
     {
+        damage -= armor;
         this.curHealth -= damage;
         if (curHealth <= 0) Die();
         if (curHealth > maxHealth) curHealth = maxHealth;
@@ -49,6 +57,22 @@ public abstract class Interactable : MonoBehaviour
     }
 
     public abstract void OnMouseDown();
+
+    public void OnMouseEnter()
+    {
+        if(GameManager.MyPlayer != Owner && GameManager.MyPlayer.Selected.Count > 0)
+        {
+            GameManager.Instance.GetComponent<InputManager>().SetCursorByName("Attack");
+        }
+    }
+
+    public void OnMouseExit()
+    {
+        if (GameManager.MyPlayer != Owner)
+        {
+            GameManager.Instance.GetComponent<InputManager>().SetCursorByName();
+        }
+    }
 
     void OnDrawGizmosSelected()
     {

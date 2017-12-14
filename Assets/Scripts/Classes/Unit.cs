@@ -64,6 +64,11 @@ public class Unit : Interactable
         }
     }
 
+    public int GetDamage()
+    {
+        return damage;
+    }
+
     public void Start()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -73,6 +78,7 @@ public class Unit : Interactable
         Name = "TestUnit";
         Priority = 0;
         damage = 20;
+        armor = 0;
         attackSpeed = 1f;
         attackDelay = 0.3f;
     }

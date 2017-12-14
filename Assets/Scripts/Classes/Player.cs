@@ -88,7 +88,7 @@ public class Player{
         }
         else
         {
-            ActivatePortrait(selected[0]);
+            ActivatePortraitAndInfo(selected[0]);
         }    
     }
 
@@ -161,17 +161,18 @@ public class Player{
             GameManager.Instance.BuildingButton.SetActive(false);            
             GameManager.Instance.Portrait.gameObject.SetActive(false);
             GameManager.Instance.UnitName.gameObject.SetActive(false);
+            GameManager.Instance.InfoPanel.SetActive(false);
             return;
         }
 
         nowSelectedType = selected[index] as Unit;
 
-        if (nowSelectedType.IsBuilder)//Если юнит строитель
+        if (nowSelectedType.IsBuilder && nowSelectedType.Owner == GameManager.MyPlayer)//Если юнит строитель
             GameManager.Instance.BuildingButton.SetActive(true);
         else
             GameManager.Instance.BuildingButton.SetActive(false);
 
-        ActivatePortrait(nowSelectedType);
+        ActivatePortraitAndInfo(nowSelectedType);
 
         ActivateOneTypeUnits();
     }
@@ -204,11 +205,25 @@ public class Player{
         return false;
     }
 
-    private void ActivatePortrait(Interactable obj)
+    private void ActivatePortraitAndInfo(Interactable obj)
     {
-        GameManager.Instance.Portrait.sprite = obj.Icon;//Изменяем портрет на выбранный тип
+        GameManager.Instance.Portrait.sprite = obj.Icon;//Изменяем портрет на выбранный тип   
         GameManager.Instance.Portrait.gameObject.SetActive(true);//Включаем портрет
+        //
         GameManager.Instance.UnitName.text = obj.Name;//Пишем имя
         GameManager.Instance.UnitName.gameObject.SetActive(true);
+        //
+        GameManager.Instance.HealthText.text = obj.GetMaxHealth().ToString();
+        if(obj as Unit)
+        {
+            GameManager.Instance.DamageText.text = (obj as Unit).GetDamage().ToString();
+            GameManager.Instance.DamageText.transform.parent.gameObject.SetActive(true);
+        }
+        else
+        {
+            GameManager.Instance.DamageText.transform.parent.gameObject.SetActive(false);
+        }  
+        GameManager.Instance.ArmorText.text = obj.GetArmor().ToString();
+        GameManager.Instance.InfoPanel.SetActive(true);        
     }
 }

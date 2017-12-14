@@ -6,6 +6,11 @@ public class GameManager : MonoBehaviour {
 
     public Image Portrait;
     public Text UnitName;
+    public GameObject InfoPanel;
+    public Text HealthText;
+    public Text DamageText;
+    public Text ArmorText;
+
     public GameObject SelectedPanel;
     public GameObject ResourcePanel;
     public GameObject BuildingButton;

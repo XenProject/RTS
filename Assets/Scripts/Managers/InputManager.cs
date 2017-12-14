@@ -139,6 +139,7 @@ public class InputManager : MonoBehaviour {
                 if (GameManager.MyPlayer.Selected.Count > 0)
                 {
                     GameManager.MyPlayer.ClearSelectedUnits();
+                    SetCursorByName();
                 }
                 else
                 {
@@ -225,6 +226,7 @@ public class InputManager : MonoBehaviour {
 
     public void BuildButton()
     {
+        if (CurrentBuilding != null) return;
         CurrentBuilding = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/Buildings/Farm"));
         CurrentBuilding.GetComponent<Building>().Name = "Farm";
         CurrentBuilding.GetComponent<Building>().Owner = GameManager.MyPlayer;

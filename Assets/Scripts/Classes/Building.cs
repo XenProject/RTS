@@ -13,6 +13,7 @@ public class Building : Interactable{
     {
         maxHealth = 1000;
         curHealth = maxHealth;
+        armor = 0;
     }
 
     void Update()
