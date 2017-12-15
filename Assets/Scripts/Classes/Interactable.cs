@@ -12,6 +12,7 @@ public abstract class Interactable : MonoBehaviour
     public Sprite Icon;
     public GameObject SelectedIcon;
     public float Radius;
+    public float AgroRadius;
     public Player Owner;
 
     [SerializeField]
@@ -71,7 +72,10 @@ public abstract class Interactable : MonoBehaviour
     {
         if(GameManager.MyPlayer != Owner && GameManager.MyPlayer.Selected.Count > 0 && GameManager.MyPlayer.Selected[0].Owner != Owner)
         {
-            GameManager.Instance.GetComponent<InputManager>().SetCursorByName("Attack");
+            if(GameManager.MyPlayer.Selected[0] as Unit)
+            {
+                GameManager.Instance.GetComponent<InputManager>().SetCursorByName("Attack");
+            }
         }
         else
         {

@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 [RequireComponent(typeof(BoxCollider))]
 public class Building : Interactable{
 
-    public bool Planed = false;
+    public bool Planed;
     //private float buildingDelay;
 
     void Start()
@@ -14,6 +14,9 @@ public class Building : Interactable{
         maxHealth = 1000;
         curHealth = maxHealth;
         armor = 0;
+        Planed = true;
+        GetComponent<SphereCollider>().enabled = true;
+        GetComponent<SphereCollider>().radius = AgroRadius / 2;
     }
 
     void Update()

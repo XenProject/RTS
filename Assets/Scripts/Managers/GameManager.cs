@@ -90,6 +90,10 @@ public class GameManager : MonoBehaviour {
             SizeText.text = VisualText.text;
             SizeText.transform.position = Input.mousePosition + (new Vector3(32, 32, 0) * GameObject.Find("Canvas").GetComponent<Canvas>().scaleFactor);
         }
+        if(MyPlayer.Selected.Count>0 && MyPlayer.Selected[0] as Building)
+        {
+            HealthText.text = MyPlayer.Selected[0].GetHealth().ToString() + "/" + MyPlayer.Selected[0].GetMaxHealth().ToString();
+        }
     }
 
     public void ShowUnitInfo(Unit unit)

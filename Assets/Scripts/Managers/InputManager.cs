@@ -152,6 +152,28 @@ public class InputManager : MonoBehaviour {
         {
             GameManager.MyPlayer.ChangeNowSelected();
         }
+        //H(Удерживание позиции)
+        if(Input.GetKeyDown(KeyCode.H) && GameManager.MyPlayer.Selected.Count > 0)
+        {
+            foreach(Interactable unit in GameManager.MyPlayer.Selected)
+            {
+                if(unit as Unit)
+                {
+                    (unit as Unit).SetupHoldState();
+                }
+            }
+        }
+        //S(Отмена)
+        if (Input.GetKeyDown(KeyCode.S) && GameManager.MyPlayer.Selected.Count > 0)
+        {
+            foreach (Interactable unit in GameManager.MyPlayer.Selected)
+            {
+                if (unit as Unit)
+                {
+                    (unit as Unit).Stop();
+                }
+            }
+        }
 
         if (CurrentBuilding != null)
         {

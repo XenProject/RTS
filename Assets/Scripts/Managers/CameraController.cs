@@ -20,19 +20,19 @@ public class CameraController : MonoBehaviour {
     void Update () {
         Vector3 pos = transform.position;
 
-        if (Input.GetKey(KeyCode.W) || (!isLocked && Input.mousePosition.y >= Screen.height - borderThickness) )
+        if (Input.GetKey(KeyCode.UpArrow) || (!isLocked && Input.mousePosition.y >= Screen.height - borderThickness) )
         {
             pos.z += camSpeed * Time.deltaTime;
         }
-        if (Input.GetKey(KeyCode.S) || (!isLocked && Input.mousePosition.y <= borderThickness) )
+        if (Input.GetKey(KeyCode.DownArrow) || (!isLocked && Input.mousePosition.y <= borderThickness) )
         {
             pos.z -= camSpeed * Time.deltaTime;
         }
-        if (Input.GetKey(KeyCode.A) || (!isLocked && Input.mousePosition.x <= borderThickness) )
+        if (Input.GetKey(KeyCode.LeftArrow) || (!isLocked && Input.mousePosition.x <= borderThickness) )
         {
             pos.x -= camSpeed * Time.deltaTime;
         }
-        if (Input.GetKey(KeyCode.D) || (!isLocked && Input.mousePosition.x >= Screen.width - borderThickness) )
+        if (Input.GetKey(KeyCode.RightArrow) || (!isLocked && Input.mousePosition.x >= Screen.width - borderThickness) )
         {
             pos.x += camSpeed * Time.deltaTime;
         }
